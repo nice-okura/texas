@@ -1,0 +1,7 @@
+<div class="players" data-uri="<%= request.host %>:<%= request.port %>/websocket">
+  <h2>ログイン中ユーザ</h2>
+  <% @login_users.each do |user| %>
+  <li class="user"> <%= user.name %></li>
+  <% end %>
+</div>
+

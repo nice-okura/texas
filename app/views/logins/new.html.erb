@@ -1,0 +1,16 @@
+<p class="alert"><%= flash[:alert] %></p>
+<%= form_tag '/logins' do %>
+<div class="login">
+<h2>ログイン</h2>
+  <table id="login_form">
+    <tr>
+      <td><%= label_tag :name, 'ユーザー名' %></td>
+      <td><%= text_field_tag :name, params[:name] %></td>
+    </tr>
+
+    <tr>
+      <td><%= submit_tag "ログイン" %></td>
+    </tr>
+  </table>
+</div>
+<% end %>
