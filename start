@@ -1,0 +1,9 @@
+PID="tmp/pids/unicorn.pid"
+NAME="Texas Unicorn"
+
+if [ -e $PID ]; then
+  echo "$NAME already started"
+  exit 1
+fi
+echo "start $NAME"
+unicorn -c config/unicorn.rb -D

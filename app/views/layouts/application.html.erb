@@ -7,8 +7,18 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+  <nav>
+    <ul>
+      <% if session[:user_id].nil? %>
+      <li><a href="/">ログイン</a></li>
+      <% else %>
+      <li><a href="/logout" data-method="delete">ログアウト</a><li>
+      <% end %>
+    </ul>
+  </nav>
   <div id="header">
     <h1>Texas Hold'em</h1>
+
   </div>
   <div id="content">
     <%= yield %>

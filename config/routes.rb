@@ -1,9 +1,5 @@
 # coding: utf-8
 Texas::Application.routes.draw do
-  get "users/new"
-
-  get "users/show"
-
   get '/index', :to => 'public#index'
   root :to => 'logins#new'
   
@@ -11,6 +7,9 @@ Texas::Application.routes.draw do
   get '/logins', :to => 'logins#new'
   post '/logins', :to => 'logins#create'
   
+  # ログアウト
+  delete '/logout', :to => 'logins#destroy'
+
   # ロビー
   get '/lobby', :to => 'logins#lobby'
 end

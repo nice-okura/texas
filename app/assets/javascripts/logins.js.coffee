@@ -17,7 +17,8 @@ class @LoginsClass
     # オブジェクトでデータを指定
     user_name = $('#username').val()
     msg_body = $('#msgbody').val()
-    @dispatcher.trigger 'receive_message', { name: user_name }
+    #@dispatcher.trigger 'receive_message', { name: user_name }
+    @dispatcher.trigger 'login_user', { name: user_name }
 
   receiveMessage: (message) =>
     # 受け取ったデータをappend
@@ -25,4 +26,6 @@ class @LoginsClass
     console.log(message)
 
 $ ->
-  window.chatClass = new ChatClass($('.player').data('uri'), true)
+  window.loginsClass = new LoginsClass($('.player').data('uri'), true)
+  @sendMessage
+  console.log('send')

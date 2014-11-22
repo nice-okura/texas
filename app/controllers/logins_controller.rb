@@ -4,9 +4,23 @@ class LoginsController < ApplicationController
   @@users = []
 
   def new
-    session[:user_id] = nil
-    session[:user_name] = nil
-  end  
+    if session[:user_id]
+      logger.debug @@users
+      logger.debug session
+
+      if @@users.empty?       
+        # ユーザをDBに保存していないので、sessionが残ったまま
+        # アプリが再起動したりして@@usersが消えた場合は、
+        # ログアウト処理を行う
+        session[:user_id] = nil
+        session[:user_name] = nil
+      else
+        @login_users = @@users
+        logger.debug @login_users
+        render 'lobby'
+        end
+    end
+  end
   
   def create
     name = params[:name]
@@ -26,13 +40,30 @@ class LoginsController < ApplicationController
       # 他のログインしているユーザにユーザ情報を送信
       # broadcast_message(:login_users, {:user_name => name})
 
-      render 'lobby'     
+      logger.debug session
+      logger.debug @@users
+      logger.debug @login_users
+
+      render 'lobby'
     else
       logger.debug '名前が入力されていない。'
       flash.now[:alert] = '名前を入力してください。'
 
       render 'new'
     end
+  end
+
+  def destroy
+    # usersからユーザ名除去
+    @@users.delete(session[:user_name])
+
+    logger.debug "users: #{@@users}"
+
+    session[:user_id] = nil
+    session[:user_name] = nil
+
+
+    render 'new'
   end
   
   def lobby

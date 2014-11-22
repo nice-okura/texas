@@ -32,6 +32,31 @@ h2 {
   text-transform: uppercase;
   line-height: 1.6em;
 }
+
+/* ----- ナビ     ----- */
+nav{
+  text-align: right;
+} 
+
+nav ul{
+  padding: 0px;	
+  margin: 0px;
+} 
+
+nav ul li {
+  display: inline;	
+  margin-right: 1em;
+} 
+
+nav ul li a { 
+  font-family: "Alright Sans", "Helvetica Neue", Helvetica, sans-serif;	
+  text-decoration: none;
+} 
+
+nav ul li a:hover{ 
+  border-bottom: 1px;
+}
+
 /* ----- ヘッダー ----- */
 #header{ 
   *zoom: 1;

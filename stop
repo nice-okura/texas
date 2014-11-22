@@ -1,0 +1,10 @@
+PID="tmp/pids/unicorn.pid"
+NAME="Texas Unicorn"
+
+if [ ! -e $PID ]; then
+  echo "$NAME not started"
+  exit 1
+fi
+echo "stop $NAME"
+
+kill -QUIT `cat ${PID}`
