@@ -4,7 +4,8 @@ class LobbysController < WebsocketRails::BaseController
   end
   
   def login_user
-    logger.debug("connected user #{message}")
-    
+    logger.debug("connected user #{session[:user_name]}")
+
+    broadcast_message :login_user, session[:user_name]
   end
 end

@@ -1,5 +1,5 @@
-PID="tmp/pids/unicorn.pid"
-NAME="Texas Unicorn"
+PID="tmp/pids/server.pid"
+NAME="Texas"
 
 if [ ! -e $PID ]; then
   echo "$NAME not started"

@@ -1,7 +1,10 @@
+<%= javascript_include_tag 'lobbys' %>
 <div class="players" data-uri="<%= request.host %>:<%= request.port %>/websocket">
   <h2>ログイン中ユーザ</h2>
   <% @login_users.each do |user| %>
   <li class="user"> <%= user.name %></li>
   <% end %>
-</div>
-
+<div id="myname" data-name="<%= @login_users.last.name%>" />
+<%= form_tag '/start' do %>
+<%= submit_tag "ゲーム開始" %>
+<% end %>

@@ -1,0 +1,28 @@
+// Place all the styles related to the texas controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+div .other_players_container {
+  text-align: center;
+}
+div .other_players {
+  display: inline-block;
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+}
+div .game_table {
+  border: 1px solid black;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+div .my_player {
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+

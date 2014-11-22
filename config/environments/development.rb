@@ -36,5 +36,4 @@ Texas::Application.configure do
   config.assets.debug = true
 
   config.middleware.delete Rack::Lock
-
 end

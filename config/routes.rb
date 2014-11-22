@@ -12,4 +12,8 @@ Texas::Application.routes.draw do
 
   # ロビー
   get '/lobby', :to => 'logins#lobby'
+
+  # ゲーム開始
+  post '/start', :to => 'texas#new'
+
 end

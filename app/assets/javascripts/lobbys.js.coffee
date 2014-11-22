@@ -1,31 +1,35 @@
-class @LoginsClass
+class @LobbysClass
   constructor: (url, useWebsocket) ->
+    console.log('constructors')
     # これがソケットのディスパッチャー
     @dispatcher = new WebSocketRails(url, useWebsocket)
+    @sendMessage()
     # イベントを監視
     @bindEvents()
     console.log(@dispatcher)
 
   bindEvents: () =>
-    # 送信ボタンが押されたらサーバへメッセージを送信
-    #    $('#send').on 'click', @sendMessage
     # サーバーからnew_messageを受け取ったらreceiveMessageを実行
-    @dispatcher.bind 'receive_message', @receiveMessage
+    @dispatcher.bind 'login_user', @receiveMessage
 
   sendMessage: (event) =>
+    console.log('sendMessage')
     # サーバ側にsend_messageのイベントを送信
     # オブジェクトでデータを指定
-    user_name = $('#username').val()
-    msg_body = $('#msgbody').val()
-    #@dispatcher.trigger 'receive_message', { name: user_name }
-    @dispatcher.trigger 'login_user', { name: user_name }
+    user_name = $('#myname').data('name')
+    @dispatcher.trigger 'login_user', user_name
 
   receiveMessage: (message) =>
-    # 受け取ったデータをappend
-    $('.players').append "<li class=\"user\"> #{message.user_name} </li>"
-    console.log(message)
+    console.log('receiveMessage')
+    my_name = $('#myname').data('name')
+    console.log(my_name)
+    if message == my_name
+      return
+    else
+      # 受け取ったデータをappend
+      $('.players').append "<li class=\"user\"> #{message} </li>"
+      console.log(message)
+    
 
 $ ->
-  window.loginsClass = new LoginsClass($('.player').data('uri'), true)
-  @sendMessage
-  console.log('send')
+  ws = new LobbysClass('herpes.nagoya:3000/websocket', true)
