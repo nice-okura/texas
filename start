@@ -1,9 +1,0 @@
-PID="tmp/pids/server.pid"
-NAME="Texas"
-
-if [ -e $PID ]; then
-  echo "$NAME already started"
-  exit 1
-fi
-echo "start $NAME"
-rails s -d -p 3000
