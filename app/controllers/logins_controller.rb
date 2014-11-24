@@ -48,6 +48,12 @@ class LoginsController < ApplicationController
 
       logger.debug "users: #{Texas::Application.config.users}"
       logger.debug "login_users: #{@login_users}"
+      
+      if Texas::Application.config.users.empty?
+        flash.now[:alert] = 'ログインしているユーザがいません。'
+        render 'new'
+        return
+      end
 
       render 'lobby'
     else

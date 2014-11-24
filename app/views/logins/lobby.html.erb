@@ -6,6 +6,4 @@
   <% end %>
 </div>
 <div id="myname" data-name="<%= @login_users.last.name%>" />
-<%= form_tag '/start' do %>
-<%= submit_tag "ゲーム開始" %>
-<% end %>
+<a href="/start" class="start">ゲーム開始</a>

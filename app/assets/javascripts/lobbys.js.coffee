@@ -40,4 +40,4 @@ class @LobbysClass
       $('.players').html(users_html)
 
 $ ->
-  ws = new LobbysClass('herpes.nagoya:3000/websocket', true)
+  ws = new LobbysClass($('.players').data('uri'), true)
