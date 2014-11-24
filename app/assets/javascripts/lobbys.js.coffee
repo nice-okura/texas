@@ -35,8 +35,7 @@ class @LobbysClass
       message.users.forEach (e) ->
         users_html += "<li class=\"user\">" + e.name + "</li>"
 
-      # 受け取ったデータをappend      
-      #$('.players').append "<li class=\"user\"> #{message} </li>"
+      # ユーザ一覧表示
       console.log(users_html)
       $('.players').html(users_html)
 
