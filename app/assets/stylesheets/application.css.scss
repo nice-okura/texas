@@ -84,9 +84,9 @@ nav ul li a:hover{
   -webkit-border-radius: 10px;	/* Safari,Google Chrome用 */
   -moz-border-radius: 10px;	/* Firefox用 */	 
   margin:0 auto;
-  width: 40%;
+  min-width: 400px;
   padding: 10px;
-  border:2px solid #999; 
+  border:2px solid #999;
   text-align: middle;
   position: relative;
 }

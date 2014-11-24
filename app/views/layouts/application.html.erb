@@ -10,10 +10,12 @@
   <nav>
     <ul>
       <% if session[:user_id].nil? %>
-      <li><a href="/">ログイン</a></li>
+      <li><a href="/" id="login">ログイン</a></li>
       <% else %>
-      <li><a href="/logout" data-method="delete">ログアウト</a><li>
+      <li><a href="/logout" data-method="delete" id="logout">ログアウト</a><li>
+      <li><a href="/all_logout" id="all_logout">全ユーザログアウト(デバッグ用)</a><li>
       <% end %>
+      
     </ul>
   </nav>
   <div id="header">

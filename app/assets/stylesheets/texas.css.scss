@@ -7,22 +7,55 @@ div .other_players_container {
 }
 div .other_players {
   display: inline-block;
-  border: 1px solid black;
   width: 100px;
   height: 100px;
 }
 div .game_table {
-  border: 1px solid black;
+  border: 3px solid black;
+  background-color: green;
+  width: 250px;
   height: 100px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
+  line-height: 100px;
 }
 div .my_player {
-  border: 1px solid black;
   width: 100px;
   height: 100px;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
+}
+div .card_black {
+  display: inline-block;
+  background-color: white;
+  line-height: 1em;
+  border: 1px solid black;
+  width: 26px;
+  height: 38px;
+  text-align: center;
+  color: black;
+}
+div .card_red {
+  display: inline-block;
+  background-color: white;
+  line-height: 1em;
+  border: 1px solid black;
+  width: 26px;
+  height: 38px;
+  text-align: center;
+  color: red;
+}
+div .card_ura {
+  display: inline-block;
+  background-color: blue;
+  line-height: 1em;
+  border: 1px solid black;
+  width: 26px;
+  height: 38px;
   text-align: center;
 }
 

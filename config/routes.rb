@@ -16,4 +16,6 @@ Texas::Application.routes.draw do
   # ゲーム開始
   post '/start', :to => 'texas#new'
 
+  # デバッグ用ログアウト
+  get '/all_logout', :to => 'logins#all_logout'
 end

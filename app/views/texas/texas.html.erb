@@ -1,14 +1,46 @@
-<h2>ゲーム画面</h2>
 <div class="other_players_container">
 <% @login_users.each do |user| %>
-<% if user.user_id != @my_id then %>
-<div class="other_players"><%= user.name %></div>
-<% end %>
+  <% if user.user_id != @my_id then %>
+    <div class="other_players">
+      <%= user.name %><br>
+      <div class="card_ura"></div>
+      <div class="card_ura"></div>
+    </div>
+  <% end %>
 <% end %>
 </div>
+
 <div class="game_table">
-ここにトランプ出したり・・・
+  <% @table_omote.times do |n| %>
+  <% case @table_cards[n][2] %>
+  <% when "s" then %>
+  <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&spades;</div>
+  <% when "c" then %>
+  <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&clubs;</div>
+  <% when "h" then %>
+  <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&hearts;</div>
+  <% when "d" then %>
+  <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&diams;</div>
+  <% end %>
+  <% end %>
+  <% (5 - @table_omote).times do %>
+  <div class="card_ura">　<br>　</div>
+  <% end %>
 </div>
+
 <div class="my_player">
-<%= @my_name %>（自分）
+  <%= @my_name %>（自分）<br>
+  <% @login_users.select{|x| x.user_id == @my_id}[0].hand.each do |card| %>
+    <% case card[2] %>
+    <% when "s" then %>
+    <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
+    <% when "c" then %>
+    <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
+    <% when "h" then %>
+    <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
+    <% when "d" then %>
+    <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
+    <% end %>
+  <% end %>
 </div>
+

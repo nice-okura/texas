@@ -4,6 +4,7 @@
   <% @login_users.each do |user| %>
   <li class="user"> <%= user.name %></li>
   <% end %>
+</div>
 <div id="myname" data-name="<%= @login_users.last.name%>" />
 <%= form_tag '/start' do %>
 <%= submit_tag "ゲーム開始" %>

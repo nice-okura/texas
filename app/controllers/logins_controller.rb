@@ -18,7 +18,7 @@ class LoginsController < ApplicationController
         @login_users = Texas::Application.config.users
         logger.debug @login_users
         render 'lobby'
-        end
+      end
     end
   end
   
@@ -75,6 +75,17 @@ class LoginsController < ApplicationController
     render 'new'
   end
   
+  def all_logout
+    # デバッグ用
+    # sessionからユーザ情報を削除
+    # config.usersからユーザ情報削除
+    session[:user_name] = nil
+    session[:user_id] = nil
+    Texas::Application.config.users = []
+
+    render 'new'
+  end
+
   def lobby
     logger.debug "LOBBY"
     logger.debug Texas::Application.config.users
