@@ -1,7 +1,8 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
-
+$ ->
+  # ログアウトしてこのページに遷移した時、全ユーザにログインユーザ情報を送信
+  ws = new WebSocketRails(location.hostname + ':' + location.port + '/websocket', true)
+  ws.trigger 'login_user', 'start'
+  console.log('Game Start')
 
 
 

@@ -23,21 +23,25 @@ class @LobbysClass
   
   receiveMessage: (message) =>
     console.log('receiveMessage')
-    console.log(message.users)
+    console.log(message)
     
-    my_name = $('#myname').data('name')
-    console.log(my_name)
-    if message.my_name == my_name
-      # 通知されたユーザ名が自分だったら追加しません
-      return
+    if message == 'start'
+      # 誰かがゲーム開始ボタンをおした時
+      # ロビーにいる人全員、ゲーム画面に遷移
+      location.href = './start'
     else
-      users_html = "<h2>ログイン中ユーザ</h2>"
-      message.users.forEach (e) ->
-        users_html += "<li class=\"user\">" + e.name + "</li>"
+      my_name = $('#myname').data('name')
+      console.log(my_name)
+      if message.my_name == my_name
+        # 通知されたユーザ名が自分だったら追加しません
+        return
+      else
+        users_html = "<h2>ログイン中ユーザ</h2>"
+        message.users.forEach (e) ->
+          users_html += "<li class=\"user\">" + e.name + "</li>"
 
-      # ユーザ一覧表示
-      console.log(users_html)
-      $('.players').html(users_html)
-
+        # ユーザ一覧表示
+        console.log(users_html)
+        $('.players').html(users_html)
 $ ->
   ws = new LobbysClass($('.players').data('uri'), true)
