@@ -12,19 +12,19 @@
 
 <div class="game_table">
   <% @table_omote.times do |n| %>
-  <% case @table_cards[n][2] %>
-  <% when "s" then %>
-  <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&spades;</div>
-  <% when "c" then %>
-  <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&clubs;</div>
-  <% when "h" then %>
-  <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&hearts;</div>
-  <% when "d" then %>
-  <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&diams;</div>
-  <% end %>
+    <% case @table_cards[n][2] %>
+    <% when "s" then %>
+    <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&spades;</div>
+    <% when "c" then %>
+    <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&clubs;</div>
+    <% when "h" then %>
+    <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&hearts;</div>
+    <% when "d" then %>
+    <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&diams;</div>
+    <% end %>
   <% end %>
   <% (5 - @table_omote).times do %>
-  <div class="card_ura">　<br>　</div>
+    <div class="card_ura">　<br>　</div>
   <% end %>
 </div>
 

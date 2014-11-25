@@ -1,12 +1,9 @@
 # coding: utf-8
 class TexasController < ApplicationController
 
-
   def new
-
     logger.debug "ゲーム開始"
-    @login_users = Texas::Application.config.users
-    # 52枚のカード
+    # ゲームで使うカードをランダムに抽出
     all_cards = ["01s", "02s", "03s", "04s", "05s", "06s",
       "07s", "08s", "09s", "10s", "11s", "12s", "13s",
       "01c", "02c", "03c", "04c", "05c", "06c",
@@ -17,6 +14,7 @@ class TexasController < ApplicationController
       "07d", "08d", "09d", "10d", "11d", "12d", "13d"]
     n = Texas::Application.config.users.size * 2 + 5
     cards = all_cards.sample(n)
+    # 手札を設定
     Texas::Application.config.users.each do |user|
       user.hand = cards.slice!(0,2)
     end
@@ -32,8 +30,5 @@ class TexasController < ApplicationController
     @table_tip = 0           # 場チップ
     @table_turn = 0          # 当番ID
     render 'texas'
-
-    
-    
   end
 end
