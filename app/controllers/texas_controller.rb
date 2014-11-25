@@ -1,7 +1,7 @@
 # coding: utf-8
 class TexasController < ApplicationController
 
-  def new
+  def start
     logger.debug "ゲーム開始"
     # ゲームで使うカードをランダムに抽出
     all_cards = ["01s", "02s", "03s", "04s", "05s", "06s",
@@ -14,9 +14,11 @@ class TexasController < ApplicationController
       "07d", "08d", "09d", "10d", "11d", "12d", "13d"]
     n = Texas::Application.config.users.size * 2 + 5
     cards = all_cards.sample(n)
-    # 手札を設定
+    # 手札とチップを設定
     Texas::Application.config.users.each do |user|
       user.hand = cards.slice!(0,2)
+      user.keep_tip = 100
+      user.bet_tip = 0
     end
     
     @login_users = Texas::Application.config.users
@@ -25,10 +27,27 @@ class TexasController < ApplicationController
 
     @table_id = 0            # 場ID
     @table_phase = "preflop" # ラウンド種類
-    @table_cards = cards     # 場カード
+    @table_cards = cards  # 場カード
     @table_omote = 0         # 表にする場カードの枚数
     @table_tip = 0           # 場チップ
     @table_turn = 0          # 当番ID
     render 'texas'
   end
+
+  def started
+    @login_users = Texas::Application.config.users
+    @my_id = session[:user_id]
+    @my_name = session[:user_name]
+
+    @table_id = 0            # 場ID
+    @table_phase = "preflop" # ラウンド種類
+    # cardsがundefinedとなる。。。
+    # @table_cards = cards     # 場カード
+    @table_cards = ["01s","02s","03s","04s","05s"]
+    @table_omote = 0         # 表にする場カードの枚数
+    @table_tip = 0           # 場チップ
+    @table_turn = 0          # 当番ID
+    render 'texas'
+  end
+
 end

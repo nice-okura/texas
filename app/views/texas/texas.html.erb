@@ -6,6 +6,8 @@
       <%= user.name %><br>
       <div class="card_ura"></div>
       <div class="card_ura"></div>
+      <div class="tip">keep: $<%= user.keep_tip %></div>
+      <div class="tip">bet: $<%= user.bet_tip %></div>
     </div>
   <% end %>
 <% end %>
@@ -31,7 +33,8 @@
 
 <div class="my_player">
   <%= @my_name %>（自分）<br>
-  <% @login_users.select{|x| x.user_id == @my_id}[0].hand.each do |card| %>
+  <% my_player = @login_users.select{|x| x.user_id == @my_id}[0] %>
+  <% my_player.hand.each do |card| %>
     <% case card[2] %>
     <% when "s" then %>
     <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
@@ -43,5 +46,19 @@
     <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
     <% end %>
   <% end %>
+  <div class="tip">keep: $<%= my_player.keep_tip %></div>
+  <div class="tip">bet: $<%= my_player.bet_tip %></div>
 </div>
 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<p>以下、デバッグ用</p>
+login_users:<br>
+<%= @login_users %><br>
+<br>
+cards:<br>
+<%= @table_cards %>
