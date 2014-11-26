@@ -1,7 +1,7 @@
 <%= javascript_include_tag 'texas' %>
 <div class="other_players_container">
 <% @login_users.each do |user| %>
-  <% if user.user_id != @my_id then %>
+  <% if user.user_id != @my.user_id then %>
     <div class="other_players">
       <%= user.name %><br>
       <div class="card_ura"></div>
@@ -12,34 +12,34 @@
 </div>
 
 <div class="game_table">
-  <% @table_omote.times do |n| %>
-  <% case @table_cards[n][2] %>
-  <% when "s" then %>
-  <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&spades;</div>
-  <% when "c" then %>
-  <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&clubs;</div>
-  <% when "h" then %>
-  <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&hearts;</div>
-  <% when "d" then %>
-  <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&diams;</div>
+  <% @table.omote.times do |n| %>
+  <% case @table.cards[n][2] %>
+  <% when "s" %>
+  <div class="card_black"><%= @table.cards[n][0,2].to_i %><br>&spades;</div>
+  <% when "c" %>
+  <div class="card_black"><%= @table.cards[n][0,2].to_i %><br>&clubs;</div>
+  <% when "h" %>
+  <div class="card_red"><%= @table.cards[n][0,2].to_i %><br>&hearts;</div>
+  <% when "d" %>
+  <div class="card_red"><%= @table.cards[n][0,2].to_i %><br>&diams;</div>
   <% end %>
   <% end %>
-  <% (5 - @table_omote).times do %>
+  <% (5 - @table.omote).times do %>
   <div class="card_ura">　<br>　</div>
   <% end %>
 </div>
 
 <div class="my_player">
-  <%= @my_name %>（自分）<br>
-  <% @login_users.select{|x| x.user_id == @my_id}[0].hand.each do |card| %>
+  <%= @my.name %>（自分）<br>
+  <% @login_users.select{|x| x.user_id == @my.user_id}[0].hand.each do |card| %>
     <% case card[2] %>
-    <% when "s" then %>
+    <% when "s" %>
     <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
-    <% when "c" then %>
+    <% when "c" %>
     <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
-    <% when "h" then %>
+    <% when "h" %>
     <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
-    <% when "d" then %>
+    <% when "d" %>
     <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
     <% end %>
   <% end %>

@@ -9,7 +9,6 @@ class @LobbysClass
     console.log(@dispatcher)
 
   bindEvents: () =>
-    $('#logout').on 'click', @sendMessage 'logout'
     # サーバーからmessageを受け取ったらreceiveMessageを実行
     @dispatcher.bind 'login_user', @receiveMessage
 
@@ -23,7 +22,7 @@ class @LobbysClass
   
   receiveMessage: (message) =>
     console.log('receiveMessage')
-    console.log(message)
+    console.log('受信メッセージ: ' + message)
     
     if message == 'start'
       # 誰かがゲーム開始ボタンをおした時
@@ -41,7 +40,6 @@ class @LobbysClass
           users_html += "<li class=\"user\">" + e.name + "</li>"
 
         # ユーザ一覧表示
-        console.log(users_html)
         $('.players').html(users_html)
 $ ->
   ws = new LobbysClass($('.players').data('uri'), true)
