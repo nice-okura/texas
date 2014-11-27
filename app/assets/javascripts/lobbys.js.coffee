@@ -27,7 +27,7 @@ class @LobbysClass
     if message == 'start'
       # 誰かがゲーム開始ボタンをおした時
       # ロビーにいる人全員、ゲーム画面に遷移
-      location.href = './start'
+      location.href = './started'
     else
       my_name = $('#myname').data('name')
       console.log(my_name)

@@ -14,7 +14,8 @@ Texas::Application.routes.draw do
   get '/lobby', :to => 'logins#lobby'
 
   # ゲーム開始
-  get '/start', :to => 'texas#new'
+  get '/start', :to => 'texas#start'
+  get '/started', :to => 'texas#started'
 
   # デバッグ用ログアウト
   get '/all_logout', :to => 'logins#all_logout'
