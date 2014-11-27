@@ -3,7 +3,7 @@
 <% @login_users.each do |user| %>
   <% if user.user_id != @my_id then %>
     <div class="other_players">
-      <%= user.name %><br>
+      <%= "●" if user.id == @turn_id %><%= user.name %><br>
       <div class="card_ura"></div>
       <div class="card_ura"></div>
       <div class="tip">keep: $<%= user.keep_tip %></div>
@@ -32,7 +32,7 @@
 </div>
 
 <div class="my_player">
-  <%= @my_name %>（自分）<br>
+  <%= "●" if @my_id == @turn_id %><%= @my_name %><br>
   <% my_player = @login_users.select{|x| x.user_id == @my_id}[0] %>
   <% my_player.hand.each do |card| %>
     <% case card[2] %>
@@ -62,3 +62,6 @@ login_users:<br>
 <br>
 cards:<br>
 <%= @table_cards %>
+<br>
+<br>
+<%= @turn_id %>

@@ -3,6 +3,8 @@ class TexasController < ApplicationController
 
   # 場カード
   Texas::Application.config.cards = []
+  # 当番
+  Texas::Application.config.turn_id = 0
 
   def start
     logger.debug "ゲーム開始"
@@ -24,14 +26,15 @@ class TexasController < ApplicationController
       user.bet_tip = 0
     end
     Texas::Application.config.cards = cards
-
+    # 当番をランダムに設定
+    Texas::Application.config.turn_id = rand(0..(Texas::Application.config.users.size - 1))
     @login_users = Texas::Application.config.users
     @my_id = session[:user_id]
     @my_name = session[:user_name]
     @table_cards = Texas::Application.config.cards  # 場カード
     @table_omote = 0                                # 表にする場カードの枚数
     @table_tip = 0                                  # 場チップ
-    @table_turn = 0                                 # 当番ID
+    @turn_id = Texas::Application.config.users[Texas::Application.config.turn_id].user_id    # 当番ID
     render 'texas'
   end
 
@@ -42,7 +45,7 @@ class TexasController < ApplicationController
     @table_cards = Texas::Application.config.cards  # 場カード
     @table_omote = 0                                # 表にする場カードの枚数
     @table_tip = 0                                  # 場チップ
-    @table_turn = 0                                 # 当番ID
+    @turn_id = Texas::Application.config.users[Texas::Application.config.turn_id].user_id    # 当番ID
     render 'texas'
   end
 
