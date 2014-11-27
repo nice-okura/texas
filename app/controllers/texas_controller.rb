@@ -29,27 +29,11 @@ class TexasController < ApplicationController
     # Draw Cards for users who have no cards
     @login_users.each do |user|
       user.hand = @table.get_cards(2) if user.hand.nil?
-    end
-   
-    logger.debug @table.omote
-=begin    
-    n = Texas::Application.config.users.size * 2 + 5
-    cards = all_cards.sample(n)
-    # 手札とチップを設定
-    Texas::Application.config.users.each do |user|
-      # 各ユーザにカードを配る
-      user.hand = cards.slice!(0,2)
       user.keep_tip = 100
       user.bet_tip = 0
     end
-
-    @table_id = 0            # 場ID
-    @table_phase = "preflop" # ラウンド種類
-    @table_cards = cards     # 場カード
-    @table_omote = 0         # 表にする場カードの枚数
-    @table_tip = 0           # 場チップ
-    @table_turn = 0          # 当番ID
-=end
+   
+    logger.debug @table.omote
 
     render 'texas'
   end
