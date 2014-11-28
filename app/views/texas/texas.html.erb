@@ -1,7 +1,7 @@
 <%= javascript_include_tag 'texas' %>
 <div class="other_players_container">
 <% @login_users.each do |user| %>
-  <% if user.user_id != @my_id then %>
+  <% if user.user_id != @my.user_id then %>
     <div class="other_players">
       <%= "●" if user.id == @turn_id %><%= user.name %><br>
       <div class="card_ura"></div>
@@ -14,40 +14,45 @@
 </div>
 
 <div class="game_table">
-  <% @table_omote.times do |n| %>
-    <% case @table_cards[n][2] %>
-    <% when "s" then %>
-    <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&spades;</div>
-    <% when "c" then %>
-    <div class="card_black"><%= @table_cards[n][0,2].to_i %><br>&clubs;</div>
-    <% when "h" then %>
-    <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&hearts;</div>
-    <% when "d" then %>
-    <div class="card_red"><%= @table_cards[n][0,2].to_i %><br>&diams;</div>
-    <% end %>
+  <% @table.omote.times do |n| %>
+  <% case @table.cards[n][2] %>
+  <% when "s" %>
+  <div class="card_black"><%= @table.cards[n][0,2].to_i %><br>&spades;</div>
+  <% when "c" %>
+  <div class="card_black"><%= @table.cards[n][0,2].to_i %><br>&clubs;</div>
+  <% when "h" %>
+  <div class="card_red"><%= @table.cards[n][0,2].to_i %><br>&hearts;</div>
+  <% when "d" %>
+  <div class="card_red"><%= @table.cards[n][0,2].to_i %><br>&diams;</div>
   <% end %>
-  <% (5 - @table_omote).times do %>
-    <div class="card_ura">　<br>　</div>
+  <% end %>
+  <% (5 - @table.omote).times do %>
+  <div class="card_ura">　<br>　</div>
   <% end %>
 </div>
 
 <div class="my_player">
+<<<<<<< HEAD
   <%= "●" if @my_id == @turn_id %><%= @my_name %><br>
   <% my_player = @login_users.select{|x| x.user_id == @my_id}[0] %>
   <% my_player.hand.each do |card| %>
+=======
+  <%= @my.name %>（自分）<br>
+  <% @my.hand.each do |card| %>
+>>>>>>> bf07f8b83c3f95cd10ba99db3f8f7d5165825a05
     <% case card[2] %>
-    <% when "s" then %>
+    <% when "s" %>
     <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
-    <% when "c" then %>
+    <% when "c" %>
     <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
-    <% when "h" then %>
+    <% when "h" %>
     <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
-    <% when "d" then %>
+    <% when "d" %>
     <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
     <% end %>
   <% end %>
-  <div class="tip">keep: $<%= my_player.keep_tip %></div>
-  <div class="tip">bet: $<%= my_player.bet_tip %></div>
+  <div class="tip">keep: $<%= @my.keep_tip %></div>
+  <div class="tip">bet: $<%= @my.bet_tip %></div>
 </div>
 
 

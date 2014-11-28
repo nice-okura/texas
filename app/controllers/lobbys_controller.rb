@@ -1,10 +1,11 @@
+# coding: utf-8
 class LobbysController < WebsocketRails::BaseController
   def initialize_session
     logger.debug("initialize lobbys controller")
   end
   
   def login_user
-    logger.debug("connected user #{session[:user_name]}")
+    logger.debug("受信メッセージ:" + message)
 
     if message == 'start'
       # ゲーム開始
