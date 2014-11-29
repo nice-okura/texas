@@ -14,8 +14,8 @@
 </div>
 
 <div class="game_table">
-  <% @table.open_cards.each do |card| %>
-  <% case card[2] %>
+  <% @table.upcards.each do |card| %>
+  <% case card[-1] %>
   <% when "s" %>
   <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
   <% when "c" %>
@@ -26,9 +26,12 @@
   <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
   <% end %>
   <% end %>
+  <% (5 - @table.upcards.size).times do %>
+  <div class="card_ura">　<br>　</div>
+  <% end %>
 </div>
 
-<div class="my_player">
+<div class="my_player" data-user_id="<%= @my.user_id %>">
   <%= @my.name %>（自分）<br>
   <% @my.hand.each do |card| %>
     <% case card[2] %>
@@ -57,4 +60,4 @@ login_users:<br>
 <%= @login_users %><br>
 <br>
 cards:<br>
-<%= @table_cards %>
+<%= @table.cards %>

@@ -13,6 +13,7 @@ class TexasController < ApplicationController
 
   def new
     logger.debug "ゲーム開始(#{session[:user_name]})"
+    logger.debug @my unless @my.nil?
     
     @login_users = Texas::Application.config.users
 
@@ -22,18 +23,30 @@ class TexasController < ApplicationController
     # 自分のユーザオブジェクト取得
     @my = @login_users.find { |user| user.user_id == session[:user_id] }
     
-    # 場(Table)がない場合、作成
-    Texas::Application.config.table = Table.new(ALL_CARDS.shuffle, @my) if Texas::Application.config.table.nil?
+    if Texas::Application.config.table.nil?
+      # 場(Table)がない場合、作成
+      Texas::Application.config.table = Table.new(ALL_CARDS.shuffle, @my) 
+    else 
+      # 場が作成されていて、
+      # プレイヤーが誰もいなかった場合、初期化
+      Texas::Application.config.table.reset! if Texas::Application.config.table.players.empty?
+    end
+
     @table = Texas::Application.config.table
 
     # Draw Cards for users who have no cards
     @login_users.each do |user|
-      user.hand = @table.get_cards(2) if user.hand.nil?
-      user.keep_tip = 100
-      user.bet_tip = 0
+      if @table.players.find { |player| player == user }.nil?
+        # ユーザがプレイ中でなければ
+        # 各人にカードを２枚ずつ配る
+        user.hand = @table.draw_cards(2) if user.hand.nil?
+        user.keep_tip = 100
+        user.bet_tip = 0
+        @table.add_user(user)
+      end
     end
-   
-    logger.debug @table.omote
+
+    logger.debug "テーブル: #{@table.inspect}"
 
     render 'texas'
   end
@@ -41,7 +54,9 @@ end
 
 # 場クラス
 class Table
-  attr_accessor :omote, :cards, :phase, :tip, :turn_user, :open_cards
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players
+
+  MAX_OPEN_CARD = 5
   PREFLOP = "preflop"
   
   # コンストラクタ
@@ -52,8 +67,8 @@ class Table
     @cards = all_cards
     @tip = 0
     @turn_user = turn_user
-    @omote = 2 # TODO: 数字より表になっているカードの配列の方が、後々勝利判定するときに便利そう
-    @open_cards = []
+    @upcards = []
+    @players = []
   end
 
   # ユーザ追加
@@ -61,10 +76,35 @@ class Table
     @players << user
   end
 
+  # ユーザ退室
+  def out_user(user)
+    @player.delete(user)
+  end
+
   # 場からカードをnum枚引く
-  def get_cards(num)
+  def draw_cards(num)
     return @cards.slice!(0..num-1)
   end
 
+  # カードを１枚表にする
+  def open_card
+    @upcards << draw_cards(1).first
+  end 
+
+  # 初期化
+  def reset!(all_cards, turn_user)
+    logger.debug "場をリセットします"
+
+    @phase = PREFLOP
+    @cards = all_cards
+    @tip = 0
+    @turn_user = turn_user
+    @upcards = []
+    @players = []
+  end
+
+  def inspect
+    return "phase: #{@phase}\n upcards: #{@upcards}\n players: #{@players}"
+  end
 end
 
