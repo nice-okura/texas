@@ -17,5 +17,3 @@ development:
   encoding: unicode
   database: texas
   pool: 5
-  username: iwata
-  password:
