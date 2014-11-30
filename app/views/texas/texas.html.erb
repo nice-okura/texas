@@ -54,7 +54,11 @@
   <div class="tip">keep: $<%= @my.keep_tip %></div>
   <div class="tip">bet: $<%= @my.bet_tip %></div>
   <div class="buttons">
+    <% if @my == @table.turn_user then %>
     <button id="buttontest">test</button>
+    <% else %>
+    <button id="buttontest" hidden>test</button>
+    <% end %>
   </div>
 </div>
 
