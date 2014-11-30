@@ -29,7 +29,7 @@ class TexasController < ApplicationController
     else 
       # 場が作成されていて、
       # プレイヤーが誰もいなかった場合、初期化
-      Texas::Application.config.table.reset! if Texas::Application.config.table.players.empty?
+      Texas::Application.config.table.reset!(ALL_CARDS.shuffle, @my) if Texas::Application.config.table.players.empty?
     end
 
     @table = Texas::Application.config.table
@@ -78,7 +78,7 @@ class Table
 
   # ユーザ退室
   def out_user(user)
-    @player.delete(user)
+    @players.delete(user)
   end
 
   # 場からカードをnum枚引く
@@ -93,7 +93,7 @@ class Table
 
   # 初期化
   def reset!(all_cards, turn_user)
-    logger.debug "場をリセットします"
+    # logger.debug "場をリセットします"
 
     @phase = PREFLOP
     @cards = all_cards
@@ -102,6 +102,13 @@ class Table
     @upcards = []
     @players = []
   end
+
+  # 次の人へ
+  def turn
+    i = @players.index(@turn_user)
+    @turn_user = @players[(i+1)%@players.size]
+    return @turn_user
+  end 
 
   def inspect
     return "phase: #{@phase}\n upcards: #{@upcards}\n players: #{@players}"

@@ -65,6 +65,16 @@ class LoginsController < ApplicationController
   end
 
   def destroy
+    # table.playersからユーザ除去
+    if Texas::Application.config.table.present?
+      logger.debug "table.playersからユーザ除去"
+      table = Texas::Application.config.table
+      users = Texas::Application.config.users
+      table.out_user(users.find { |user| user.user_id == session[:user_id] })
+      logger.debug "#{users.find { |user| user.user_id == session[:user_id] }}"
+    end
+    logger.debug "table.players: #{Texas::Application.config.table.players}"
+    
     # usersからユーザ名除去
     Texas::Application.config.users.each do |user|
       if user.name == session[:user_name]
@@ -72,7 +82,7 @@ class LoginsController < ApplicationController
         break
       end
     end
-    
+
     logger.debug "users: #{Texas::Application.config.users}"
 
     session[:user_id] = nil
@@ -87,6 +97,12 @@ class LoginsController < ApplicationController
     # config.usersからユーザ情報削除
     session[:user_name] = nil
     session[:user_id] = nil
+
+    # table.playersをnilにする
+    if Texas::Application.config.table.present?
+      Texas::Application.config.table = nil
+    end
+
     Texas::Application.config.users = []
 
     render 'new'

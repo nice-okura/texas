@@ -2,7 +2,10 @@
 <div class="other_players_container">
 <% @login_users.each do |user| %>
   <% if user.user_id != @my.user_id then %>
-    <div class="other_players">
+    <div class="other_players" data-user_id="<%= user.user_id %>">
+      <span class="turn">
+        <%= "●" if user == @table.turn_user %>
+      </span>
       <%= user.name %><br>
       <div class="card_ura"></div>
       <div class="card_ura"></div>
@@ -32,6 +35,9 @@
 </div>
 
 <div class="my_player" data-user_id="<%= @my.user_id %>">
+  <span class="turn">
+    <%= "●" if @my == @table.turn_user %>
+  </span>
   <%= @my.name %>（自分）<br>
   <% @my.hand.each do |card| %>
     <% case card[2] %>
@@ -47,6 +53,9 @@
   <% end %>
   <div class="tip">keep: $<%= @my.keep_tip %></div>
   <div class="tip">bet: $<%= @my.bet_tip %></div>
+  <div class="buttons">
+    <button id="buttontest">test</button>
+  </div>
 </div>
 
 
@@ -60,4 +69,9 @@ login_users:<br>
 <%= @login_users %><br>
 <br>
 cards:<br>
-<%= @table.cards %>
+<%= @table.cards %><br>
+<br>
+@my:<br>
+<%= @my.inspect %><br>
+<br>
+<%= @table.inspect %><br>
