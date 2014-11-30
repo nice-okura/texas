@@ -103,7 +103,7 @@ class Table
     @players = []
   end
 
-  # 次の人へ
+  # @turn_userを次の人へまわす
   def turn
     i = @players.index(@turn_user)
     @turn_user = @players[(i+1)%@players.size]

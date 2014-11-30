@@ -21,7 +21,7 @@ $ ->
       else
         $(this).children(".turn").html("")
 
-  # サーバからイベントを受信したときに実行する関数を指定
+  # buttontestイベント発生時は関数turnを実行
   ws.bind 'buttontest', turn
   
   ws.close
