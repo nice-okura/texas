@@ -74,10 +74,6 @@ class Table
     @phase = PREFLOP
     @cards = all_cards
     @tip = 0
-    @turn_user = turn_user
-    @btn = turn_user
-    @sb = turn_user
-    @bb = turn_user
     @upcards = []
     @players = []
   end
@@ -108,7 +104,6 @@ class Table
     @phase = PREFLOP
     @cards = all_cards
     @tip = 0
-    @turn_user = turn_user
     @upcards = []
     @players = []
   end

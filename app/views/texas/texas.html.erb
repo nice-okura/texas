@@ -10,7 +10,11 @@
     <span class="turn">
       <%= "●" if user == @table.turn_user %>
     </span>
-    <%= user.name %><br>
+    <%= user.name %>
+    <%= "(BTN)" if user == @table.btn %>
+    <%= "(SB)" if user == @table.sb %>
+    <%= "(BB)" if user == @table.bb %>
+    <br>
     <div class="card_ura"></div>
     <div class="card_ura"></div>
     <div class="tip">keep: $<%= user.keep_tip %></div>
@@ -43,7 +47,11 @@
   <span class="turn">
     <%= "●" if @my == @table.turn_user %>
   </span>
-  <%= @my.name %>（自分）<br>
+  <%= @my.name %>
+  <%= "(BTN)" if @my == @table.btn %>
+  <%= "(SB)" if @my == @table.sb %>
+  <%= "(BB)" if @my == @table.bb %>
+  <br>
   <% @my.hand.each do |card| %>
     <% case card[2] %>
     <% when "s" %>
@@ -86,8 +94,7 @@ cards:<br>
 table:<br>
 <%= @table.inspect %><br>
 <br>
-table.turn_user:<br>
-<%= @table.turn_user.inspect %><br>
-<br>
-table.btn:<br>
-<%= @table.btn.inspect %><br>
+btn: <%= @table.btn.name %><br>
+sb: <%= @table.sb.name %><br>
+bb: <%= @table.bb.name %><br>
+turn_user: <%= @table.turn_user.name %><br>
