@@ -1,21 +1,25 @@
 <%= javascript_include_tag 'texas' %>
+<!-- 自分以外のプレイヤーを表示 -->
 <div class="other_players_container">
-<% @login_users.each do |user| %>
-  <% if user.user_id != @my.user_id then %>
-    <div class="other_players" data-user_id="<%= user.user_id %>">
-      <span class="turn">
-        <%= "●" if user == @table.turn_user %>
-      </span>
-      <%= user.name %><br>
-      <div class="card_ura"></div>
-      <div class="card_ura"></div>
-      <div class="tip">keep: $<%= user.keep_tip %></div>
-      <div class="tip">bet: $<%= user.bet_tip %></div>
-    </div>
-  <% end %>
+<% i = @table.players.index(@my) %>
+<% psize = @table.players.size %>
+<% (psize-1).times do %>
+  <% i = (i + 1) % psize %>
+  <% user = @table.players[i] %>
+  <div class="other_players" data-user_id="<%= user.user_id %>">
+    <span class="turn">
+      <%= "●" if user == @table.turn_user %>
+    </span>
+    <%= user.name %><br>
+    <div class="card_ura"></div>
+    <div class="card_ura"></div>
+    <div class="tip">keep: $<%= user.keep_tip %></div>
+    <div class="tip">bet: $<%= user.bet_tip %></div>
+  </div>
 <% end %>
 </div>
 
+<!-- テーブルを表示 -->
 <div class="game_table">
   <% @table.upcards.each do |card| %>
   <% case card[-1] %>
@@ -34,6 +38,7 @@
   <% end %>
 </div>
 
+<!-- 自分のプレイヤーを表示 -->
 <div class="my_player" data-user_id="<%= @my.user_id %>">
   <span class="turn">
     <%= "●" if @my == @table.turn_user %>
@@ -78,4 +83,11 @@ cards:<br>
 @my:<br>
 <%= @my.inspect %><br>
 <br>
+table:<br>
 <%= @table.inspect %><br>
+<br>
+table.turn_user:<br>
+<%= @table.turn_user.inspect %><br>
+<br>
+table.btn:<br>
+<%= @table.btn.inspect %><br>
