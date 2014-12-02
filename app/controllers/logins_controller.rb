@@ -72,8 +72,8 @@ class LoginsController < ApplicationController
       users = Texas::Application.config.users
       table.out_user(users.find { |user| user.user_id == session[:user_id] })
       logger.debug "#{users.find { |user| user.user_id == session[:user_id] }}"
+      logger.debug "table.players: #{Texas::Application.config.table.players}"
     end
-    logger.debug "table.players: #{Texas::Application.config.table.players}"
     
     # usersからユーザ名除去
     Texas::Application.config.users.each do |user|
