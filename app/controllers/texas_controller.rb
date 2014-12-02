@@ -26,10 +26,10 @@ class TexasController < ApplicationController
     if Texas::Application.config.table.nil?
       # 場(Table)がない場合、作成
       Texas::Application.config.table = Table.new(ALL_CARDS.shuffle, @my) 
-    else 
+    elsif Texas::Application.config.table.players.empty?
       # 場が作成されていて、
       # プレイヤーが誰もいなかった場合、初期化
-      Texas::Application.config.table.reset!(ALL_CARDS.shuffle, @my) if Texas::Application.config.table.players.empty?
+      Texas::Application.config.table.reset!(ALL_CARDS.shuffle, @my)
     end
 
     @table = Texas::Application.config.table
@@ -46,6 +46,14 @@ class TexasController < ApplicationController
       end
     end
 
+    # BTN, SB, BBを設定する
+    if @table.btn.blank? then
+      @table.btn = @my
+      @table.sb = @table.next_user(@table.btn)
+      @table.bb = @table.next_user(@table.sb)
+      @table.turn_user = @table.next_user(@table.bb)
+    end
+    
     logger.debug "テーブル: #{@table.inspect}"
 
     render 'texas'
@@ -54,7 +62,7 @@ end
 
 # 場クラス
 class Table
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb
 
   MAX_OPEN_CARD = 5
   PREFLOP = "preflop"
@@ -67,6 +75,9 @@ class Table
     @cards = all_cards
     @tip = 0
     @turn_user = turn_user
+    @btn = turn_user
+    @sb = turn_user
+    @bb = turn_user
     @upcards = []
     @players = []
   end
@@ -94,7 +105,6 @@ class Table
   # 初期化
   def reset!(all_cards, turn_user)
     # logger.debug "場をリセットします"
-
     @phase = PREFLOP
     @cards = all_cards
     @tip = 0
@@ -103,10 +113,15 @@ class Table
     @players = []
   end
 
+  # 引数ユーザの次のユーザを返す
+  def next_user(user)
+    i = @players.index(user)
+    return @players[(i+1)%@players.size]
+  end
+
   # @turn_userを次の人へまわす
   def turn
-    i = @players.index(@turn_user)
-    @turn_user = @players[(i+1)%@players.size]
+    @turn_user = next_user(@turn_user)
     return @turn_user
   end 
 
