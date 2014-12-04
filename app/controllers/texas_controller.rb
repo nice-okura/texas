@@ -53,8 +53,12 @@ class TexasController < ApplicationController
       @table.bb = @table.next_user(@table.sb)
       @table.turn_user = @table.next_user(@table.bb)
       # ブラインド
+      logger.debug @table.sb.inspect
       @table.sb.bet(1)
       @table.bb.bet(2)
+      @table.sb.bet_tip = 1
+      logger.debug "blind"
+      logger.debug @table.sb.inspect
     end
 
     
@@ -66,7 +70,7 @@ end
 
 # 場クラス
 class Table
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :maxtip
 
   MAX_OPEN_CARD = 5
   PREFLOP = "preflop"
@@ -80,6 +84,7 @@ class Table
     @tip = 0
     @upcards = []
     @players = []
+    @maxtip = 2
   end
 
   # ユーザ追加
@@ -110,6 +115,7 @@ class Table
     @tip = 0
     @upcards = []
     @players = []
+    @maxtip = 2
   end
 
   # 引数ユーザの次のユーザを返す
