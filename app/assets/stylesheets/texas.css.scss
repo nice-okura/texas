@@ -2,14 +2,14 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-div .other_players_container {
+div.other_players_container {
   text-align: center;
 }
-div .other_players {
+div.other_players {
   display: inline-block;
 
 }
-div .game_table {
+div.game_table {
   border: 3px solid black;
   background-color: green;
   width: 180px;
@@ -21,12 +21,12 @@ div .game_table {
   text-align: center;
   padding: 40px;
 }
-div .my_player {
+div.my_player {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
-div .card_black {
+div.card_black {
   display: inline-block;
   background-color: white;
   line-height: 1em;
@@ -36,7 +36,7 @@ div .card_black {
   text-align: center;
   color: black;
 }
-div .card_red {
+div.card_red {
   display: inline-block;
   background-color: white;
   line-height: 1em;
@@ -46,7 +46,7 @@ div .card_red {
   text-align: center;
   color: red;
 }
-div .card_ura {
+div.card_ura {
   display: inline-block;
   background-color: blue;
   line-height: 1em;
@@ -55,4 +55,6 @@ div .card_ura {
   height: 38px;
   text-align: center;
 }
-
+input#num {
+  width: 50px;
+}

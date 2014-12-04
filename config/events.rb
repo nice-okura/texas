@@ -15,5 +15,9 @@ WebsocketRails::EventMap.describe do
   #subscribe :receive_message, to: ChatController, with_method: :receive_message
   subscribe :login_user, to: LobbysController, with_method: :login_user
   subscribe :out_player, to: TexasWebsocketController, with_method: :out_player
-  subscribe :buttontest, to: TexasWebsocketController, with_method: :buttontest
+  subscribe :call, to: TexasWebsocketController, with_method: :call
+  subscribe :fold, to: TexasWebsocketController, with_method: :fold
+  subscribe :check, to: TexasWebsocketController, with_method: :check
+  subscribe :bet, to: TexasWebsocketController, with_method: :bet
+  subscribe :raise, to: TexasWebsocketController, with_method: :raise
 end

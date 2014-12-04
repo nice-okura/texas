@@ -11,7 +11,7 @@ class TexasWebsocketController < WebsocketRails::BaseController
     Texas::Application.config.table.player.reject! { |player| player.user_id == user_id }
   end
 
-  def buttontest
+  def call
     logger.debug("buttontest: " + message)
     turn_user = Texas::Application.config.table.turn()
     broadcast_message "buttontest", turn_user.user_id

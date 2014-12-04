@@ -5,9 +5,9 @@ $ ->
   console.log('Game Start')
 
   # ボタン押下時
-  $("#buttontest").click ->
-    $("#buttontest").hide()
-    ws.trigger 'buttontest', 'test'
+  $("#call, #fold, #check, #bet, #raise").click ->
+    $(".buttons").hide()
+    ws.trigger $(this).attr("id"), $("#num").val()
     console.log('buttontest')
     return
 
@@ -17,7 +17,7 @@ $ ->
       if $(this).attr("data-user_id") is message.toString()
         $(this).children(".turn").html("●")
         if $(this).attr("class") is "my_player"
-          $(this).find("#buttontest").show()
+          $(this).find("#call, #fold, #check, #bet, #raise").show()
       else
         $(this).children(".turn").html("")
 
