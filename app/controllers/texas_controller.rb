@@ -46,21 +46,13 @@ class TexasController < ApplicationController
       end
     end
 
-    # BTN, SB, BB, 当番を設定する
+    # BTN, SB, BBを設定する
     if @table.btn.blank? then
       @table.btn = @my
       @table.sb = @table.next_user(@table.btn)
       @table.bb = @table.next_user(@table.sb)
       @table.turn_user = @table.next_user(@table.bb)
-      # ブラインド
-      logger.debug @table.sb.inspect
-      @table.sb.bet(1)
-      @table.bb.bet(2)
-      @table.sb.bet_tip = 1
-      logger.debug "blind"
-      logger.debug @table.sb.inspect
     end
-
     
     logger.debug "テーブル: #{@table.inspect}"
 
