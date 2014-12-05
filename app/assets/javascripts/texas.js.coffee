@@ -8,21 +8,34 @@ $ ->
   $("#call, #fold, #check, #bet, #raise").click ->
     $(".buttons").hide()
     ws.trigger $(this).attr("id"), $("#num").val()
-    console.log('buttontest')
+    console.log($(this).attr("id"))
     return
 
-  #当番に●を表示
-  turn = (message) ->
-    $(".other_players,.my_player").each ->
-      if $(this).attr("data-user_id") is message.toString()
-        $(this).children(".turn").html("●")
-        if $(this).attr("class") is "my_player"
-          $(this).find("#call, #fold, #check, #bet, #raise").show()
-      else
-        $(this).children(".turn").html("")
+  # ●を移動
+  turn = (users) ->
+    console.log('turn')
+    turn_user = $('[data-user_id="' + users[0].user_id + '"]')
+    turn_user.children('.turn').html('')
+    next_turn_user = $('[data-user_id="' + users[1].user_id + '"]')
+    next_turn_user.children('.turn').html('●')
+
+  # ボタンを表示
+  show_buttons = (id) ->
+    console.log('show_buttons')
+    my = $('.my_player')
+    $('.buttons').show() if my.data('user_id') is id
+
+  # action
+  action = (users) ->
+    console.log('action')
+    turn_user = $('[data-user_id="' + users[0].user_id + '"]')
+    turn_user.children('.keep_tip').html('keep: $' + users[0].keep_tip)
+    turn_user.children('.bet_tip').html('bet: $' + users[0].bet_tip)
+    turn(users)
+    show_buttons(users[1].user_id)
 
   # buttontestイベント発生時は関数turnを実行
-  ws.bind 'buttontest', turn
+  ws.bind 'action', action
   
   ws.close
     

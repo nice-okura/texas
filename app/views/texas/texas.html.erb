@@ -17,8 +17,8 @@
     <br>
     <div class="card_ura"></div>
     <div class="card_ura"></div>
-    <div class="tip">keep: $<%= user.keep_tip %></div>
-    <div class="tip">bet: $<%= user.bet_tip %></div>
+    <div class="keep_tip">keep: $<%= user.keep_tip %></div>
+    <div class="bet_tip">bet: $<%= user.bet_tip %></div>
   </div>
 <% end %>
 </div>
@@ -64,8 +64,8 @@
     <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
     <% end %>
   <% end %>
-  <div class="tip">keep: $<%= @my.keep_tip %></div>
-  <div class="tip">bet: $<%= @my.bet_tip %></div>
+  <div class="keep_tip">keep: $<%= @my.keep_tip %></div>
+  <div class="bet_tip">bet: $<%= @my.bet_tip %></div>
   <% if @my == @table.turn_user then %>
   <div class="buttons">
   <% else %>

@@ -46,13 +46,18 @@ class TexasController < ApplicationController
       end
     end
 
-    # BTN, SB, BBを設定する
+    # BTN, SB, BB, 当番を設定する
     if @table.btn.blank? then
       @table.btn = @my
       @table.sb = @table.next_user(@table.btn)
       @table.bb = @table.next_user(@table.sb)
       @table.turn_user = @table.next_user(@table.bb)
+      # ブラインド
+      @table.sb.gamble(1)
+      @table.bb.gamble(2)
+      @table.max_tip = 2
     end
+
     
     logger.debug "テーブル: #{@table.inspect}"
 
@@ -62,7 +67,7 @@ end
 
 # 場クラス
 class Table
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :maxtip
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_tip
 
   MAX_OPEN_CARD = 5
   PREFLOP = "preflop"
@@ -76,7 +81,7 @@ class Table
     @tip = 0
     @upcards = []
     @players = []
-    @maxtip = 2
+    @max_tip = 0
   end
 
   # ユーザ追加
@@ -107,7 +112,6 @@ class Table
     @tip = 0
     @upcards = []
     @players = []
-    @maxtip = 2
   end
 
   # 引数ユーザの次のユーザを返す
@@ -126,4 +130,3 @@ class Table
     return "phase: #{@phase}\n upcards: #{@upcards}\n players: #{@players}"
   end
 end
-
