@@ -87,7 +87,7 @@ $ ->
     console.log res
     msg = res[0]
     table = res[1]
-    alert msg + table.turn_user.user_id + table.btns_flg
+    alert msg
     show_buttons(table.turn_user.user_id, table.btns_flg)
 
   # 次のフェーズへ移行
@@ -122,7 +122,6 @@ $ ->
           when 'd'
             mark = '&diams;'
             color = 'card_red'
-        console.log u.user_id
         user = $('[data-user_id="' + u.user_id + '"]')
         card = user.children('[data-card_id="' + j + '"]')
         card.attr('class', color)
