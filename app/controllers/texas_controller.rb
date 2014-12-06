@@ -67,12 +67,12 @@ end
 
 # 場クラス
 class Table 
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_user
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_user, :btns_flg
 
   MAX_OPEN_CARD = 5
   PREFLOP = "preflop" # 0枚オープン
   FLOP = "flop"       # 3枚オープン
-  TURN = "preflop"    # 4枚オープン
+  TURN = "turn"    # 4枚オープン
   RIVER = "river"     # 5枚オープン
   
   # コンストラクタ
@@ -85,6 +85,16 @@ class Table
     @upcards = []
     @players = []
     @max_user = 0
+    @btns_flg = true
+  end
+
+  # 初期化
+  def reset!(all_cards, turn_user)
+    @phase = PREFLOP
+    @cards = all_cards
+    @tip = 0
+    @upcards = []
+    @players = []
   end
 
   # ユーザ追加
@@ -107,16 +117,6 @@ class Table
     @upcards << draw_cards(1).first
   end 
 
-  # 初期化
-  def reset!(all_cards, turn_user)
-    # logger.debug "場をリセットします"
-    @phase = PREFLOP
-    @cards = all_cards
-    @tip = 0
-    @upcards = []
-    @players = []
-  end
-
   # 引数ユーザの次のユーザを返す
   def next_user(user)
     i = @players.index(user)
@@ -127,6 +127,7 @@ class Table
   # ただしフォールドしてる人は飛ばす
   def turn
     @turn_user = next_user(@turn_user)
+    # Userオブジェクトがfoldという名の変数もメソッドも持っていて厄介！
     # turn(@turn_user) if @turn_user.fold
     return @turn_user
   end
@@ -141,28 +142,28 @@ class Table
 
   # 次のフェーズへ
   def next_phase
+    @btns_flg = false
+    @turn_user = @sb
+    @max_user = @sb
+    collect_tip()
     case @phase
     # prefloop -> flop
     when PREFLOP
-      collect_tip()
       open_card()
       open_card()
       open_card()
-      @turn_user = @sb
-      @max_user = @sb
       @phase = FLOP
     # flop -> turn
     when FLOP
       open_card()
-      @turn_user = @sb
       @phase = TURN
     # turn -> river
     when TURN
       open_card()
-      @turn_user = @sb
       @phase = RIVER
     # turn -> end
     when RIVER
+      collect_tip()
       # 勝敗判定
     else
     end

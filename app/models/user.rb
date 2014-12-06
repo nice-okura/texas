@@ -31,6 +31,9 @@ class User < ActiveRecord::Base
   # @param [int] tip ベットする金額
   def bet(tip)
     logger.debug "User.bet()が呼ばれた"
+    self.gamble(tip)
+    Texas::Application.config.table.btns_flg = true
+    Texas::Application.config.table.max_user = self
   end
 
   # raise

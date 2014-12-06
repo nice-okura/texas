@@ -15,8 +15,9 @@
     <%= "(SB)" if user == @table.sb %>
     <%= "(BB)" if user == @table.bb %>
     <br>
-    <div class="card_ura"></div>
-    <div class="card_ura"></div>
+    <% 2.times do |j| %>
+      <div class="card_ura" data-card_id="<%= j %>">　<br>　</div>
+    <% end %>
     <div class="keep_tip">keep: $<%= user.keep_tip %></div>
     <div class="bet_tip">bet: $<%= user.bet_tip %></div>
   </div>
@@ -76,12 +77,21 @@
   <% else %>
   <div class="buttons" hidden>
   <% end %>
-  <button id="call">call</button>
-  <button id="fold">fold</button>
-  <button id="check" hidden>check</button>
-  <button id="bet" hidden>bet</button>
-  <button id="raise">raise</button>
-  <input type="number" id="num" min=0 value=0>
+  <% if @table.btns_flg %>
+    <button id="call">call</button>
+    <button id="check" hidden>check</button>
+    <button id="raise">raise</button>
+    <button id="bet" hidden>bet</button>
+    <input type="number" id="num" min=1 value=1>
+    <button id="fold">fold</button>
+  <% else %>
+    <button id="call" hidden>call</button>
+    <button id="check">check</button>
+    <button id="raise" hidden>raise</button>
+    <button id="bet">bet</button>
+    <input type="number" id="num" min=1 value=1>
+    <button id="fold">fold</button>
+  <% end %>
   </div>
 </div>
 
