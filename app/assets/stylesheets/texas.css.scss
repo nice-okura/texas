@@ -12,14 +12,20 @@ div.other_players {
 div.game_table {
   border: 3px solid black;
   background-color: green;
-  width: 180px;
-  height: 40px;
+  width: 250px;
+  height: 115px;
   margin-top: 20px;
   margin-bottom: 20px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  padding: 40px;
+  padding-top: 5px;
+}
+div.table_tip {
+  color: white;
+  height: 35px;
+  margin: 0px;
+  padding: 0px;
 }
 div.my_player {
   margin-left: auto;
@@ -48,7 +54,9 @@ div.card_red {
 }
 div.card_ura {
   display: inline-block;
-  background-color: blue;
+  /* background: linear-gradient(to bottom, skyblue, white); */
+  /* background: repeating-linear-gradient(-45deg, red, red 4px, white 4px, white 8px); */
+  background-color: skyblue;
   line-height: 1em;
   border: 1px solid black;
   width: 26px;

@@ -55,7 +55,7 @@ class TexasController < ApplicationController
       # ブラインド
       @table.sb.gamble(1)
       @table.bb.gamble(2)
-      @table.max_tip = 2
+      @table.max_user = @table.bb
     end
 
     
@@ -66,11 +66,14 @@ class TexasController < ApplicationController
 end
 
 # 場クラス
-class Table
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_tip
+class Table 
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_user
 
   MAX_OPEN_CARD = 5
-  PREFLOP = "preflop"
+  PREFLOP = "preflop" # 0枚オープン
+  FLOP = "flop"       # 3枚オープン
+  TURN = "preflop"    # 4枚オープン
+  RIVER = "river"     # 5枚オープン
   
   # コンストラクタ
   # @param [Array] all_cards この場で使用する全カード
@@ -81,7 +84,7 @@ class Table
     @tip = 0
     @upcards = []
     @players = []
-    @max_tip = 0
+    @max_user = 0
   end
 
   # ユーザ追加
@@ -120,11 +123,50 @@ class Table
     return @players[(i+1)%@players.size]
   end
 
-  # @turn_userを次の人へまわす
+  # 当番ユーザを次の人へまわす
+  # ただしフォールドしてる人は飛ばす
   def turn
     @turn_user = next_user(@turn_user)
+    # turn(@turn_user) if @turn_user.fold
     return @turn_user
-  end 
+  end
+
+  # チップ回収
+  def collect_tip
+    @players.each do |user|
+      @tip += user.bet_tip
+      user.bet_tip = 0
+    end
+  end
+
+  # 次のフェーズへ
+  def next_phase
+    case @phase
+    # prefloop -> flop
+    when PREFLOP
+      collect_tip()
+      open_card()
+      open_card()
+      open_card()
+      @turn_user = @sb
+      @max_user = @sb
+      @phase = FLOP
+    # flop -> turn
+    when FLOP
+      open_card()
+      @turn_user = @sb
+      @phase = TURN
+    # turn -> river
+    when TURN
+      open_card()
+      @turn_user = @sb
+      @phase = RIVER
+    # turn -> end
+    when RIVER
+      # 勝敗判定
+    else
+    end
+  end
 
   def inspect
     return "phase: #{@phase}\n upcards: #{@upcards}\n players: #{@players}"

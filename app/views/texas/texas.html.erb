@@ -25,21 +25,26 @@
 
 <!-- テーブルを表示 -->
 <div class="game_table">
-  <% @table.upcards.each do |card| %>
-  <% case card[-1] %>
-  <% when "s" %>
-  <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
-  <% when "c" %>
-  <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
-  <% when "h" %>
-  <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
-  <% when "d" %>
-  <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
+  <div class="table_tip">$<%= @table.tip %></div>
+  <div class="table_cards">
+  <% 5.times do |i| %>
+    <% card = @table.upcards[i] %>
+    <% if card.nil? %>
+      <div class="card_ura" data-card_id="<%= i %>">　<br>　</div>
+    <% else %>
+      <% case card[-1] %>
+      <% when "s" %>
+      <div class="card_black" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&spades;</div>
+      <% when "c" %>
+      <div class="card_black" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&clubs;</div>
+      <% when "h" %>
+      <div class="card_red" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&hearts;</div>
+      <% when "d" %>
+      <div class="card_red" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&diams;</div>
+      <% end %>
+    <% end %>
   <% end %>
-  <% end %>
-  <% (5 - @table.upcards.size).times do %>
-  <div class="card_ura">　<br>　</div>
-  <% end %>
+  </div>
 </div>
 
 <!-- 自分のプレイヤーを表示 -->
@@ -76,7 +81,7 @@
   <button id="check" hidden>check</button>
   <button id="bet" hidden>bet</button>
   <button id="raise">raise</button>
-  <input type="number" id="num" min=0>
+  <input type="number" id="num" min=0 value=0>
   </div>
 </div>
 
@@ -87,19 +92,28 @@
 <br>
 <br>
 <p>以下、デバッグ用</p>
-login_users:<br>
-<%= @login_users %><br>
-<br>
-cards:<br>
-<%= @table.cards %><br>
-<br>
-@my:<br>
-<%= @my.inspect %><br>
-<br>
-table:<br>
-<%= @table.inspect %><br>
-<br>
-btn: <%= @table.btn.name %><br>
-sb: <%= @table.sb.name %><br>
-bb: <%= @table.bb.name %><br>
-turn_user: <%= @table.turn_user.name %><br>
+max_user: <%= @table.max_user.name %><br>
+
+
+
+
+<!-- テーブルを表示 -->
+<!--
+<div class="game_table">
+  <% @table.upcards.each do |card| %>
+  <% case card[-1] %>
+  <% when "s" %>
+  <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
+  <% when "c" %>
+  <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
+  <% when "h" %>
+  <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
+  <% when "d" %>
+  <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
+  <% end %>
+  <% end %>
+  <% (5 - @table.upcards.size).times do %>
+  <div class="card_ura">　<br>　</div>
+  <% end %>
+</div>
+-->

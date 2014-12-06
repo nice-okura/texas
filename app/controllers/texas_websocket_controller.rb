@@ -7,49 +7,89 @@ class TexasWebsocketController < WebsocketRails::BaseController
   
   def out_player
     logger.debug("受信メッセージ:" + message)
-
     user_id = message.io_i
     Texas::Application.config.table.player.reject! { |player| player.user_id == user_id }
   end
 
+  # call
   def call
     logger.debug("call")
-    user = Texas::Application.config.table.turn_user
-    user.call()
-    next_user = Texas::Application.config.table.turn()
-    broadcast_message "action", [user, next_user]
+    table = Texas::Application.config.table
+    turn_user = table.turn_user
+    turn_user.call()
+    next_turn_user = table.turn()
+    # 一周したら次のフェーズへ
+    if next_turn_user == table.max_user then
+      logger.debug("next phase")
+      table.next_phase()
+      broadcast_message "next_phase", [turn_user, table]
+    else
+      broadcast_message :action, [turn_user, next_turn_user]
+    end
   end
 
+  # fold
   def fold
     logger.debug("fold")
-    user = Texas::Application.config.table.turn_user
-    user.fold()
-    next_user = Texas::Application.config.table.turn()
-    broadcast_message "action", [user, next_user]
+    table = Texas::Application.config.table
+    turn_user = table.turn_user
+    turn_user.fold()
+    next_turn_user = table.turn()
+    # 一周したら次のフェーズへ
+    if next_turn_user == table.max_user then
+      logger.debug("next phase")
+      table.next_phase()
+      broadcast_message "next_phase", [turn_user, table]
+    else
+      broadcast_message :action, [turn_user, next_turn_user]
+    end
   end
 
+  # check
   def check
     logger.debug("check")
-    user = Texas::Application.config.table.turn_user
-    user.check()
-    next_user = Texas::Application.config.table.turn()
-    broadcast_message "action", [user, next_user]
+    table = Texas::Application.config.table
+    turn_user = table.turn_user
+    turn_user.check()
+    next_turn_user = table.turn()
+    # 一周したら次のフェーズへ
+    if next_turn_user == table.max_user then
+      logger.debug("next phase")
+      table.next_phase()
+      broadcast_message "next_phase", [turn_user, table]
+    else
+      broadcast_message :action, [turn_user, next_turn_user]
+    end
   end
 
+  # bet
+  # message: ベットする金額
   def bet
     logger.debug("bet")
-    user = Texas::Application.config.table.turn_user
-    user.bet(message.to_i)
-    next_user = Texas::Application.config.table.turn()
-    broadcast_message "action", [user, next_user]
+    table = Texas::Application.config.table
+    turn_user = table.turn_user
+    turn_user.bet(message.to_i)
+    next_turn_user = table.turn()
+    broadcast_message :action, [turn_user, next_turn_user]
   end
 
+  # raise
+  # message: レイズする金額
   def raise
     logger.debug("raise")
-    user = Texas::Application.config.table.turn_user
-    user.raise(message.to_i)
-    next_user = Texas::Application.config.table.turn()
-    broadcast_message "action", [user, next_user]
+    raise_tip = message.to_i
+    table = Texas::Application.config.table
+    turn_user = table.turn_user
+    gap = table.max_user.bet_tip - turn_user.bet_tip
+    if raise_tip > gap
+      logger.debug("suc")
+      turn_user.raise(raise_tip)
+      next_turn_user = table.turn()
+      broadcast_message :action, [turn_user, next_turn_user]
+    else
+      logger.debug("fai")
+      trigger_failure ["$#{(gap + 1)}以上でレイズしてね", turn_user.user_id]
+    end
   end
   
 end
