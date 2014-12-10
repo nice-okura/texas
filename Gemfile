@@ -41,3 +41,6 @@ gem 'unicorn'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 gem 'em-websocket'
+
+# To use model without using DB
+gem 'active_attr'

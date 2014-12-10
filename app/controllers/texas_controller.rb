@@ -25,14 +25,15 @@ class TexasController < ApplicationController
     
     if Texas::Application.config.table.nil?
       # 場(Table)がない場合、作成
-      Texas::Application.config.table = Table.new(ALL_CARDS.shuffle, @my) 
+      Texas::Application.config.table = Table.new(ALL_CARDS.shuffle, @my)
+      print_debug 
     elsif Texas::Application.config.table.players.empty?
       # 場が作成されていて、
       # プレイヤーが誰もいなかった場合、初期化
       Texas::Application.config.table.reset!(ALL_CARDS.shuffle, @my)
     end
-
-    @table = Texas::Application.config.table
+      
+    @table = Texas::Application.config.table    
 
     # Draw Cards for users who have no cards
     @login_users.each do |user|
@@ -52,124 +53,16 @@ class TexasController < ApplicationController
       @table.sb = @table.next_user(@table.btn)
       @table.bb = @table.next_user(@table.sb)
       @table.turn_user = @table.next_user(@table.bb)
+
+      logger.debug @table.turn_user
       # ブラインド
       @table.sb.gamble(1)
       @table.bb.gamble(2)
       @table.max_user = @table.bb
     end
-
     
-    logger.debug "テーブル: #{@table.inspect}"
+    print_debug
 
     render 'texas'
-  end
-end
-
-# 場クラス
-class Table 
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_user, :btns_flg
-
-  MAX_OPEN_CARD = 5
-  PREFLOP = "preflop" # 0枚オープン
-  FLOP = "flop"       # 3枚オープン
-  TURN = "turn"    # 4枚オープン
-  RIVER = "river"     # 5枚オープン
-  
-  # コンストラクタ
-  # @param [Array] all_cards この場で使用する全カード
-  # @param [User] turn_user １番初めの当番ユーザ
-  def initialize(all_cards, turn_user)
-    @phase = PREFLOP
-    @cards = all_cards
-    @tip = 0
-    @upcards = []
-    @players = []
-    @max_user = 0
-    @btns_flg = true
-  end
-
-  # 初期化
-  def reset!(all_cards, turn_user)
-    @phase = PREFLOP
-    @cards = all_cards
-    @tip = 0
-    @upcards = []
-    @players = []
-  end
-
-  # ユーザ追加
-  def add_user(user)
-    @players << user
-  end
-
-  # ユーザ退室
-  def out_user(user)
-    @players.delete(user)
-  end
-
-  # 場からカードをnum枚引く
-  def draw_cards(num)
-    return @cards.slice!(0..num-1)
-  end
-
-  # カードを１枚表にする
-  def open_card
-    @upcards << draw_cards(1).first
-  end 
-
-  # 引数ユーザの次のユーザを返す
-  def next_user(user)
-    i = @players.index(user)
-    return @players[(i+1)%@players.size]
-  end
-
-  # 当番ユーザを次の人へまわす
-  # ただしフォールドしてる人は飛ばす
-  def turn
-    @turn_user = next_user(@turn_user)
-    # Userオブジェクトがfoldという名の変数もメソッドも持っていて厄介！
-    # turn(@turn_user) if @turn_user.fold
-    return @turn_user
-  end
-
-  # チップ回収
-  def collect_tip
-    @players.each do |user|
-      @tip += user.bet_tip
-      user.bet_tip = 0
-    end
-  end
-
-  # 次のフェーズへ
-  def next_phase
-    @btns_flg = false
-    @turn_user = @sb
-    @max_user = @sb
-    collect_tip()
-    case @phase
-    # prefloop -> flop
-    when PREFLOP
-      open_card()
-      open_card()
-      open_card()
-      @phase = FLOP
-    # flop -> turn
-    when FLOP
-      open_card()
-      @phase = TURN
-    # turn -> river
-    when TURN
-      open_card()
-      @phase = RIVER
-    # turn -> end
-    when RIVER
-      collect_tip()
-      # 勝敗判定
-    else
-    end
-  end
-
-  def inspect
-    return "phase: #{@phase}\n upcards: #{@upcards}\n players: #{@players}"
   end
 end

@@ -36,4 +36,9 @@ Texas::Application.configure do
   config.assets.debug = true
 
   config.middleware.delete Rack::Lock
+
+  # log
+  config.logger = Logger.new(config.paths["log"].first)
+  config.logger.formatter = Logger::Formatter.new
+  config.logger.datetime_format = "%Y-%m-%d %H:%M:%S"
 end

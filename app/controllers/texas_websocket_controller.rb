@@ -13,7 +13,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
   # call
   def call
-    logger.debug("call")
+    logger.info "[#{self.class}][#{__method__}]"
+
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.call()
@@ -35,7 +36,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
   # check
   def check
-    logger.debug("check")
+    logger.info "[#{self.class}][#{__method__}]"
+    
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.check()
@@ -58,7 +60,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
   # raise
   # message: レイズする金額
   def raise
-    logger.debug("raise")
+    logger.info "[#{self.class}][#{__method__}]"
+    
     raise_tip = message.to_i
     table = Texas::Application.config.table
     turn_user = table.turn_user
@@ -75,7 +78,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
   # bet
   # message: ベットする金額
   def bet
-    logger.debug("bet")
+    logger.info "[#{self.class}][#{__method__}]"
+
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.bet(message.to_i)
@@ -85,7 +89,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
   # fold
   def fold
-    logger.debug("fold")
+    logger.info "[#{self.class}][#{__method__}]"
+    
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.fold()
