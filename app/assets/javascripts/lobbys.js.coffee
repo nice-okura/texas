@@ -18,6 +18,7 @@ class @LobbysClass
     console.log("event: " + event)
     
     user_name = $('#myname').data('name')
+    console.log "SendData: " + user_name
     @dispatcher.trigger 'login_user', user_name
   
   receiveMessage: (message) =>
@@ -30,7 +31,7 @@ class @LobbysClass
       location.href = './start'
     else
       my_name = $('#myname').data('name')
-      console.log(my_name)
+      console.log("my_name:" + my_name)
       if message.my_name == my_name
         # 通知されたユーザ名が自分だったら追加しません
         return

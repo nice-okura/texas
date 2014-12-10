@@ -35,6 +35,7 @@ $ ->
   # @param [Array] users 情報更新するユーザのUserオブジェクトが入った配列
   update_users = (users) ->
     console.log 'update users'
+    console.log users
     $.each users, (i, user) ->
       update_user(user)
     

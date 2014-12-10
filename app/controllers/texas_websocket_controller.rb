@@ -6,8 +6,10 @@ class TexasWebsocketController < WebsocketRails::BaseController
   end
   
   def out_player
+    logger.info "[#{self.class}][#{__method__}]"
+
     logger.debug("受信メッセージ:" + message)
-    user_id = message.io_i
+    user_id = message.to_i
     Texas::Application.config.table.player.reject! { |player| player.user_id == user_id }
   end
 
@@ -27,6 +29,7 @@ class TexasWebsocketController < WebsocketRails::BaseController
       else
         logger.debug("next phase")
         table.next_phase()
+        print_debug
         broadcast_message "next_phase", [turn_user, table]
       end
     else

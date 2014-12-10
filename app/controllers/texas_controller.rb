@@ -12,6 +12,8 @@ class TexasController < ApplicationController
     "07d", "08d", "09d", "10d", "11d", "12d", "13d"]
 
   def new
+    logger.info "[#{self.class}][#{__method__}]"
+    
     logger.debug "ゲーム開始(#{session[:user_name]})"
     logger.debug @my unless @my.nil?
     

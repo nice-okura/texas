@@ -4,6 +4,9 @@ class CreateUsers < ActiveRecord::Migration
       t.integer :user_id
       t.string :name
       t.integer :keep_tip
+      t.string :hand
+      t.integer :bet_tip
+      t.boolean :fold_flg
       t.timestamps
     end
   end

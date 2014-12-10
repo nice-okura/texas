@@ -4,6 +4,8 @@ class LoginsController < ApplicationController
   Texas::Application.config.users = []
 
   def new
+    logger.info "[#{self.class}][#{__method__}]"
+    
     if session[:user_id]
       logger.debug Texas::Application.config.users
       logger.debug session
