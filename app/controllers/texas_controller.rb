@@ -165,7 +165,17 @@ class Table
     when RIVER
       collect_tip()
       # 勝敗判定
+      judge()
     else
+    end
+  end
+
+  # 勝敗判定
+  def judge
+    @players.each do |user|
+      @upcards.combination(3) {|combi|
+        combi_hand = user.hand + combi
+      }
     end
   end
 
