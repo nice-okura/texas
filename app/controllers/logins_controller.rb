@@ -4,6 +4,8 @@ class LoginsController < ApplicationController
   Texas::Application.config.users = []
 
   def new
+    logger.info "[#{self.class}][#{__method__}]"
+    
     if session[:user_id]
       logger.debug Texas::Application.config.users
       logger.debug session
@@ -36,6 +38,7 @@ class LoginsController < ApplicationController
 
     if !name.empty?
       # Userモデルを作成する。DB使わないならnewのみ
+      logger.debug "User作成"
       user = User.new(user_id: @@user_id, name: name)
       @@user_id += 1
       Texas::Application.config.users.push(user)
@@ -62,6 +65,8 @@ class LoginsController < ApplicationController
 
       render 'new'
     end
+
+    print_debug
   end
 
   def destroy
@@ -88,6 +93,8 @@ class LoginsController < ApplicationController
     session[:user_id] = nil
     session[:user_name] = nil
 
+    print_debug
+   
     render 'new'
   end
   
@@ -99,9 +106,9 @@ class LoginsController < ApplicationController
     session[:user_id] = nil
 
     # table.playersをnilにする
-    if Texas::Application.config.table.present?
+
       Texas::Application.config.table = nil
-    end
+
 
     Texas::Application.config.users = []
 

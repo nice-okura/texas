@@ -8,6 +8,7 @@ $ ->
   # @param [Array] users 旧当番ユーザと新当番ユーザのUserオブジェクトが入った要素数2の配列
   turn = (turn_user, next_turn_user) ->
     console.log 'turn'
+    console.log next_turn_user
     $('[data-user_id="' + turn_user.user_id + '"]').children('.turn').html('')
     $('[data-user_id="' + next_turn_user.user_id + '"]').children('.turn').html('●')
 
@@ -35,6 +36,7 @@ $ ->
   # @param [Array] users 情報更新するユーザのUserオブジェクトが入った配列
   update_users = (users) ->
     console.log 'update users'
+    console.log users
     $.each users, (i, user) ->
       update_user(user)
     
@@ -70,7 +72,7 @@ $ ->
   action = (res) ->
     console.log 'action'
     turn_user = res[0]
-    table = res[1]
+    table = res[1].table
     update_user(turn_user)
     turn(turn_user, table.turn_user)
     show_buttons(table.turn_user.user_id, table.btns_flg)
@@ -86,7 +88,7 @@ $ ->
   failure = (res) ->
     console.log res
     msg = res[0]
-    table = res[1]
+    table = res[1].table
     alert msg
     show_buttons(table.turn_user.user_id, table.btns_flg)
 
@@ -95,7 +97,11 @@ $ ->
   next_phase = (res) ->
     console.log 'next_phase'
     turn_user = res[0]
-    table = res[1]
+    table = res[1].table
+    console.log table
+    console.log table.tip
+    console.log table.bb
+    console.log table.players
     update_users(table.players)
     update_table(table)
     turn(turn_user, table.turn_user)
@@ -103,8 +109,9 @@ $ ->
     console.log table
 
   # 結果発表
-  finish = (table) ->
+  finish = (res) ->
     console.log 'finish'
+    table = res.table
     # カードオープン
     $.each table.players, (i, u) ->
       $.each u.hand, (j, s) ->

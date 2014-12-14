@@ -6,14 +6,17 @@ class TexasWebsocketController < WebsocketRails::BaseController
   end
   
   def out_player
+    logger.info "[#{self.class}][#{__method__}]"
+
     logger.debug("受信メッセージ:" + message)
-    user_id = message.io_i
+    user_id = message.to_i
     Texas::Application.config.table.player.reject! { |player| player.user_id == user_id }
   end
 
   # call
   def call
-    logger.debug("call")
+    logger.info "[#{self.class}][#{__method__}]"
+
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.call()
@@ -26,6 +29,7 @@ class TexasWebsocketController < WebsocketRails::BaseController
       else
         logger.debug("next phase")
         table.next_phase()
+        print_debug
         broadcast_message "next_phase", [turn_user, table]
       end
     else
@@ -35,7 +39,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
   # check
   def check
-    logger.debug("check")
+    logger.info "[#{self.class}][#{__method__}]"
+    
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.check()
@@ -58,7 +63,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
   # raise
   # message: レイズする金額
   def raise
-    logger.debug("raise")
+    logger.info "[#{self.class}][#{__method__}]"
+    
     raise_tip = message.to_i
     table = Texas::Application.config.table
     turn_user = table.turn_user
@@ -75,7 +81,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
   # bet
   # message: ベットする金額
   def bet
-    logger.debug("bet")
+    logger.info "[#{self.class}][#{__method__}]"
+
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.bet(message.to_i)
@@ -85,7 +92,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
   # fold
   def fold
-    logger.debug("fold")
+    logger.info "[#{self.class}][#{__method__}]"
+    
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.fold()
