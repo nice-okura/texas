@@ -16,7 +16,25 @@
     <%= "(BB)" if user == @table.bb %>
     <br>
     <% 2.times do |j| %>
-      <div class="card_ura" data-card_id="<%= j %>">　<br>　</div>
+      <% if user.fold_flg %>
+        <div class="card_hidden" data-card_id="<%= j %>">　<br>　</div>
+      <% else %>
+        <% if @table.phase == "finish" %>
+          <% card = user.hand[j] %>
+          <% case card[2] %>
+          <% when "s" %>
+          <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&spades;</div>
+          <% when "c" %>
+          <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&clubs;</div>
+          <% when "h" %>
+          <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&hearts;</div>
+          <% when "d" %>
+          <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&diams;</div>
+          <% end %>
+	<% else %>
+          <div class="card_ura" data-card_id="<%= j %>">　<br>　</div>
+        <% end %>
+      <% end %>
     <% end %>
     <div class="keep_tip">keep: $<%= user.keep_tip %></div>
     <div class="bet_tip">bet: $<%= user.bet_tip %></div>
@@ -58,21 +76,26 @@
   <%= "(SB)" if @my == @table.sb %>
   <%= "(BB)" if @my == @table.bb %>
   <br>
-  <% @my.hand.each do |card| %>
-    <% case card[2] %>
-    <% when "s" %>
-    <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
-    <% when "c" %>
-    <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
-    <% when "h" %>
-    <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
-    <% when "d" %>
-    <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
+  <% 2.times do |j| %>
+    <% if @my.fold_flg %>
+      <div class="card_hidden" data-card_id="<%= j %>">　<br>　</div>
+    <% else %>
+      <% card = @my.hand[j] %>
+      <% case card[2] %>
+      <% when "s" %>
+      <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&spades;</div>
+      <% when "c" %>
+      <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&clubs;</div>
+      <% when "h" %>
+      <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&hearts;</div>
+      <% when "d" %>
+      <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&diams;</div>
+      <% end %>
     <% end %>
   <% end %>
   <div class="keep_tip">keep: $<%= @my.keep_tip %></div>
   <div class="bet_tip">bet: $<%= @my.bet_tip %></div>
-  <% if @my == @table.turn_user then %>
+  <% if @my == @table.turn_user %>
   <div class="buttons">
   <% else %>
   <div class="buttons" hidden>
@@ -94,37 +117,3 @@
   <% end %>
   </div>
 </div>
-
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<p>以下、デバッグ用</p>
-player: <%= @table.players[2] %><br />
-max_user: <%= @table.max_user.name %><br>
-turn_user: <%= @table.turn_user %><br />
-my: <%= @my %><br />
-
-
-<!-- テーブルを表示 -->
-<!--
-<div class="game_table">
-  <% @table.upcards.each do |card| %>
-  <% case card[-1] %>
-  <% when "s" %>
-  <div class="card_black"><%= card[0,2].to_i %><br>&spades;</div>
-  <% when "c" %>
-  <div class="card_black"><%= card[0,2].to_i %><br>&clubs;</div>
-  <% when "h" %>
-  <div class="card_red"><%= card[0,2].to_i %><br>&hearts;</div>
-  <% when "d" %>
-  <div class="card_red"><%= card[0,2].to_i %><br>&diams;</div>
-  <% end %>
-  <% end %>
-  <% (5 - @table.upcards.size).times do %>
-  <div class="card_ura">　<br>　</div>
-  <% end %>
-</div>
--->

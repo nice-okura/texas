@@ -23,12 +23,12 @@ class TexasWebsocketController < WebsocketRails::BaseController
     next_turn_user = table.turn()
     # 一周したら次のフェーズへ
     if next_turn_user == table.max_user then
-      if table.phase == "river"
+      logger.debug("next phase")
+      table.next_phase()
+      if table.phase == "finish"
         logger.debug("finish")
-        broadcast_message "finish", table
+        broadcast_message "finish", [turn_user, table]
       else
-        logger.debug("next phase")
-        table.next_phase()
         print_debug
         broadcast_message "next_phase", [turn_user, table]
       end
@@ -47,12 +47,13 @@ class TexasWebsocketController < WebsocketRails::BaseController
     next_turn_user = table.turn()
     # 一周したら次のフェーズへ
     if next_turn_user == table.max_user then
-      if table.phase == "river"
+      logger.debug("next phase")
+      table.next_phase()
+      if table.phase == "finish"
         logger.debug("finish")
-        broadcast_message "finish", table
+        broadcast_message "finish", [turn_user, table]
       else
-        logger.debug("next phase")
-        table.next_phase()
+        print_debug
         broadcast_message "next_phase", [turn_user, table]
       end
     else
@@ -102,7 +103,13 @@ class TexasWebsocketController < WebsocketRails::BaseController
     if next_turn_user == table.max_user then
       logger.debug("next phase")
       table.next_phase()
-      broadcast_message "next_phase", [turn_user, table]
+      if table.phase == "finish"
+        logger.debug("finish")
+        broadcast_message "finish", [turn_user, table]
+      else
+        print_debug
+        broadcast_message "next_phase", [turn_user, table]
+      end
     else
       broadcast_message :action, [turn_user, table]
     end

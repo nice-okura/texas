@@ -14,6 +14,7 @@ $ ->
 
   # ボタンを表示
   # @param [int] id ボタンを表示するユーザのID
+  # @param [Boolean] btns_flg ボタン表示パターン判別用フラグ
   show_buttons = (id, btns_flg) ->
     console.log 'show_buttons'
     if btns_flg
@@ -71,6 +72,17 @@ $ ->
         mark = '&diams;'
         color = 'card_red'
     return {num: num, mark: mark, color: color}
+
+  # カードを非表示にする
+  hide_cards = (user) ->
+    console.log 'hide_cards'
+    user_tag = $('[data-user_id="' + user.user_id + '"]')
+    card_tag = user_tag.children('[data-card_id="0"]')
+    card_tag.attr('class', 'card_hidden')
+    card_tag.html('　<br>　')
+    card_tag = user_tag.children('[data-card_id="1"]')
+    card_tag.attr('class', 'card_hidden')
+    card_tag.html('　<br>　')
   
   # 誰かがボタンを押した時
   # @param [Array] res 旧当番ユーザのUserオブジェクトとTableオブジェクトが入った要素数2の配列
@@ -78,9 +90,11 @@ $ ->
     console.log 'action'
     turn_user = res[0]
     table = res[1].table
+    hide_cards(turn_user) if turn_user.fold_flg
     update_user(turn_user)
     turn(turn_user, table.turn_user)
     show_buttons(table.turn_user.user_id, table.btns_flg)
+    console.log table
     console.log '----------------'
 
   # success
@@ -101,12 +115,10 @@ $ ->
   # @param [Array] res 旧当番ユーザのUserオブジェクトとTableオブジェクトが入った要素数2の配列
   next_phase = (res) ->
     console.log 'next_phase'
+    console.log res
     turn_user = res[0]
     table = res[1].table
-    console.log table
-    console.log table.tip
-    console.log table.bb
-    console.log table.players
+    hide_cards(turn_user) if turn_user.fold_flg
     update_users(table.players)
     update_table(table)
     turn(turn_user, table.turn_user)
@@ -114,11 +126,16 @@ $ ->
     console.log table
 
   # 結果発表
+  # @param [Array] res 旧当番ユーザのUserオブジェクトとTableオブジェクトが入った要素数2の配列
   finish = (res) ->
     console.log 'finish'
-    table = res.table
+    console.log res
+    turn_user = res[0]
+    table = res[1].table
+    hide_cards(turn_user) if turn_user.fold_flg
     # カードオープン
     $.each table.players, (i, u) ->
+      return true if u.fold_flg
       $.each u.hand, (j, s) ->
         card_disp = decode_card(s)
         user_tag = $('[data-user_id="' + u.user_id + '"]')

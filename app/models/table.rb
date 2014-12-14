@@ -20,6 +20,7 @@ class Table
   FLOP = "flop"       # 3枚オープン
   TURN = "turn"       # 4枚オープン
   RIVER = "river"     # 5枚オープン
+  FINISH = "finish"   # おわり
   
   # コンストラクタ
   # @param [Array] all_cards この場で使用する全カード
@@ -90,20 +91,25 @@ class Table
   end 
 
   # 引数ユーザの次のユーザを返す
-  def next_user(user)
+  # ただし第二引数fold_flg_checkがfalseでなければフォールドしてる人は飛ばす
+  def next_user(user, fold_flg_check = true)
     logger.info "[#{self.class}][#{__method__}]"
 
     i = @players.index(user)
-    return @players[(i+1)%@players.size]
+    next_turn_user = @players[(i + 1) % @players.size]
+    if fold_flg_check && next_turn_user.fold_flg
+      next_turn_user = next_user(next_turn_user)
+    else
+      return next_turn_user
+    end
   end
 
   # 当番ユーザを次の人へまわす
-  # ただしフォールドしてる人は飛ばす
   def turn
     logger.info "[#{self.class}][#{__method__}]"
 
     @turn_user = next_user(@turn_user)
-    # turn(@turn_user) if @turn_user.fold_flg
+    logger.debug("@turn_user: #{@turn_user.inspect}")
     return @turn_user
   end
 
@@ -122,8 +128,13 @@ class Table
     logger.info "[#{self.class}][#{__method__}]"
 
     @btns_flg = false
-    @turn_user = @sb
-    @max_user = @sb
+    if @sb.fold_flg
+      @turn_user = next_user(@sb)
+      @max_user = next_user(@sb)
+    else
+      @turn_user = @sb
+      @max_user = @sb
+    end
     collect_tip()
     case @phase
     # prefloop -> flop
@@ -143,6 +154,7 @@ class Table
     # river -> end
     when RIVER
       collect_tip()
+      @phase = FINISH
       # 勝敗判定
     else
     end

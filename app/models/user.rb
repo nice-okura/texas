@@ -16,9 +16,9 @@ class User < ActiveRecord::Base
     self.gamble(gap)
   end
 
-  # folds
+  # fold
   def fold
-    logger.debug "User.fold()sが呼ばれた"
+    logger.debug "User.fold()が呼ばれた"
     # logger.debug "#{caller}"
     self.fold_flg = true
   end

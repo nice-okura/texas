@@ -43,8 +43,10 @@ class TexasController < ApplicationController
         # ユーザがプレイ中でなければ
         # 各人にカードを２枚ずつ配る
         user.hand = @table.draw_cards(2) if user.hand.nil?
+        # ユーザ初期化
         user.keep_tip = 100
         user.bet_tip = 0
+        user.fold_flg = false
         @table.add_user(user)
       end
     end
