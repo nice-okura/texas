@@ -47,25 +47,30 @@ $ ->
     console.log table.upcards
     # カードオープン
     $.each table.upcards, (i, s) ->
-      num = parseInt(s)
-      switch s.charAt(2)
-        when 's'
-          mark = '&spades;'
-          color = 'card_black'
-        when 'c'
-          mark = '&clubs;'
-          color = 'card_black'
-        when 'h'
-          mark = '&hearts;'
-          color = 'card_red'
-        when 'd'
-          mark = '&diams;'
-          color = 'card_red'
-      card = $('.table_cards').children('[data-card_id="' + i + '"]')
-      card.attr('class', color)
-      card.html(num + '<br>' + mark)
+      card_disp = decode_card(s)
+      card_tag = $('.table_cards').children('[data-card_id="' + i + '"]')
+      card_tag.attr('class', card_disp.color)
+      card_tag.html(card_disp.num + '<br>' + card_disp.mark)
     # チップ変更
     $('.table_tip').html('$' + table.tip)
+
+  # カードの数字＆マークを表示用に変換
+  decode_card = (card) ->
+    num = parseInt(card)
+    switch card.charAt(2)
+      when 's'
+        mark = '&spades;'
+        color = 'card_black'
+      when 'c'
+        mark = '&clubs;'
+        color = 'card_black'
+      when 'h'
+        mark = '&hearts;'
+        color = 'card_red'
+      when 'd'
+        mark = '&diams;'
+        color = 'card_red'
+    return {num: num, mark: mark, color: color}
   
   # 誰かがボタンを押した時
   # @param [Array] res 旧当番ユーザのUserオブジェクトとTableオブジェクトが入った要素数2の配列
@@ -115,24 +120,11 @@ $ ->
     # カードオープン
     $.each table.players, (i, u) ->
       $.each u.hand, (j, s) ->
-        num = parseInt(s)
-        switch s.charAt(2)
-          when 's'
-            mark = '&spades;'
-            color = 'card_black'
-          when 'c'
-            mark = '&clubs;'
-            color = 'card_black'
-          when 'h'
-            mark = '&hearts;'
-            color = 'card_red'
-          when 'd'
-            mark = '&diams;'
-            color = 'card_red'
-        user = $('[data-user_id="' + u.user_id + '"]')
-        card = user.children('[data-card_id="' + j + '"]')
-        card.attr('class', color)
-        card.html(num + '<br>' + mark)
+        card_disp = decode_card(s)
+        user_tag = $('[data-user_id="' + u.user_id + '"]')
+        card_tag = user_tag.children('[data-card_id="' + j + '"]')
+        card_tag.attr('class', card_disp.color)
+        card_tag.html(card_disp.num + '<br>' + card_disp.mark)
 
   # イベントと関数の関連付け
   ws.bind 'action', action
