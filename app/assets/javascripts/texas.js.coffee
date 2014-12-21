@@ -58,6 +58,15 @@ $ ->
   # カードの数字＆マークを表示用に変換
   decode_card = (card) ->
     num = parseInt(card)
+    switch num
+      when 1
+        num = 'A'
+      when 11
+        num = 'J'
+      when 12
+        num = 'Q'
+      when 13
+        num = 'K'
     switch card.charAt(2)
       when 's'
         mark = '&spades;'
@@ -142,6 +151,13 @@ $ ->
         card_tag = user_tag.children('[data-card_id="' + j + '"]')
         card_tag.attr('class', card_disp.color)
         card_tag.html(card_disp.num + '<br>' + card_disp.mark)
+    $('[data-user_id="' + turn_user.user_id + '"]').children('.turn').html('')
+    $.each table.winners, (i, winner) ->
+      console.log winner.name
+      $('[data-user_id="' + winner.user_id + '"]').children('.turn').html('★')
+    update_users(table.players)
+    update_table(table)
+      
 
   # イベントと関数の関連付け
   ws.bind 'action', action

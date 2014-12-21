@@ -13,7 +13,8 @@ class Table
   attribute :bb
   attribute :max_user
   attribute :btns_flg
-  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_user, :btns_flg
+  attribute :winners
+  attr_accessor :upcards, :cards, :phase, :tip, :turn_user, :players, :btn, :sb, :bb, :max_user, :btns_flg, :winners
 
   MAX_OPEN_CARD = 5
   PREFLOP = "preflop" # 0枚オープン
@@ -137,27 +138,134 @@ class Table
     end
     collect_tip()
     case @phase
-    # prefloop -> flop
+    # 今preflopの場合flopへ移行する
     when PREFLOP
+      logger.info "preflop -> flop"
       open_card()
       open_card()
       open_card()
       @phase = FLOP
-    # flop -> turn
+    # 今flopの場合turnへ移行する
     when FLOP
+      logger.info "flop -> turn"
       open_card()
       @phase = TURN
-    # turn -> river
+    # 今turnの場合riverへ移行する
     when TURN
+      logger.info "turn -> river"
       open_card()
+      ###################################################################
+      # 手札とテーブル上のカードを設定（テスト用）
+      # @upcards = ["02s", "02c", "03s", "03c", "04h"]
+      # @players[0].hand = ["01s", "01h"]
+      # @players[1].hand = ["13c", "13s"]
+      ###################################################################
       @phase = RIVER
-    # river -> end
+    # 今riverの場合endへ移行する
     when RIVER
-      collect_tip()
+      logger.info "river -> finish"
       @phase = FINISH
-      # 勝敗判定
+      @winners = judge()
+      @winners.each do |winner|
+        winner.keep_tip += @tip / @winners.size
+      end
+      @tip = 0
     else
     end
+  end
+
+  # 勝敗判定
+  def judge
+    winners = [] # 戻り値
+    data = []
+    # 役判定
+    points = []
+    players_final = @players.select do |p| !p.fold_flg end
+    players_final.each do |user|
+      logger.debug user.name
+      max_point = 0
+      points_tmp = []
+      nums_tmp = []
+      max_hands = []
+      max_numss = []
+      (user.hand + @upcards).combination(5) do |h|
+        point = 0
+        nums = h.collect do |c| c[0..1].to_i end.sort
+        suits = h.collect do |c| c[2] end
+        straight_flg = (nums == (nums[0]..nums[0]+4).to_a || nums == [1,10,11,12,13])
+        flush_flg = suits.uniq.size == 1
+        if straight_flg && flush_flg 
+          point = 8 # straight flush
+        elsif flush_flg
+          point = 5 # flush
+        elsif straight_flg
+          point = 4 # straight
+        else
+          groups = nums.uniq.collect do |n| nums.count(n) end.sort
+          case groups
+          when [1, 4] then point = 7       # four of a kind
+          when [2, 3] then point = 6       # full house
+          when [1, 1, 3] then point = 3    # three of a kind
+          when [1, 2, 2] then point = 2    # two pair
+          when [1, 1, 1, 2] then point = 1 # one pair
+          end
+        end
+        # 最強の役になる組み合わせをすべて保持
+        if point == max_point
+          max_hands << h
+          max_numss << nums
+        elsif point > max_point
+          max_hands = [h]
+          max_numss = [nums]
+          max_point = point
+        end
+        logger.debug "#{h.inspect} -> #{point}"
+      end
+      logger.debug "max_numss = #{max_numss.uniq.inspect}"
+      data << {user: user, hands: max_hands.uniq, numss: max_numss.uniq, point: max_point}
+      points << max_point
+    end
+    logger.debug points.inspect
+    data.select! do |d| d[:point] == points.max end
+    # 役だけで勝者が決定する場合
+    if data.size == 1
+      logger.debug "役だけで決まった"
+      winners = data.collect do |d| d[:user] end
+    # 役だけでは勝者が決定しない場合
+    elsif data.size > 1
+      logger.debug "役だけでは決まらなかった"
+      max_values = []
+      # 各ユーザの最強手札を決める
+      data.each do |d|
+        # 各手札の評価値を求める
+        # 評価値とは手札を重複数・数値の大きい順に並べ替えて数値化したもの
+        values = []
+        d[:numss].each do |nums|
+          value_arrays = []
+          # 1を14に変換
+          unless nums == [1, 2, 3, 4, 5]
+            nums.collect! do |n|
+              n == 1 ? 14 : n
+            end
+            nums.sort!
+          end
+          # 重複数・数値の大きい順に並べ替え
+          5.downto(1) do |rep|
+            value_arrays << nums.select do |n| nums.count(n) == rep end.reverse
+          end
+          value_array = value_arrays.flatten.collect do |n| sprintf("%02d", n) end
+          # 評価値
+          values << value_array.join.to_i
+        end
+        logger.debug "#{d[:user].name}の各手札の評価値：#{values}"
+        max_values << values.max
+      end
+      logger.debug "各ユーザの評価値：#{max_values}"
+      data.each_index do |i|
+        winners << data[i][:user] if max_values[i] == max_values.max
+      end
+    end
+    return winners
   end
 
   def inspect
