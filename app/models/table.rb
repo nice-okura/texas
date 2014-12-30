@@ -111,6 +111,7 @@ class Table
 
     @turn_user = next_user(@turn_user)
     logger.debug("@turn_user: #{@turn_user.inspect}")
+
     return @turn_user
   end
 

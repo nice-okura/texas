@@ -40,6 +40,7 @@ class LoginsController < ApplicationController
       # Userモデルを作成する。DB使わないならnewのみ
       logger.debug "User作成"
       user = User.new(user_id: @@user_id, name: name)
+      logger.debug user.inspect
       @@user_id += 1
       Texas::Application.config.users.push(user)
       @login_users = Texas::Application.config.users

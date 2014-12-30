@@ -7,9 +7,6 @@
   <% i = (i + 1) % psize %>
   <% user = @table.players[i] %>
   <div class="other_players" data-user_id="<%= user.user_id %>">
-    <span class="turn">
-      <%= "●" if user == @table.turn_user %>
-    </span>
     <%= user.name %>
     <%= "(BTN)" if user == @table.btn %>
     <%= "(SB)" if user == @table.sb %>
@@ -68,9 +65,6 @@
 
 <!-- 自分のプレイヤーを表示 -->
 <div class="my_player" data-user_id="<%= @my.user_id %>">
-  <span class="turn">
-    <%= "●" if @my == @table.turn_user %>
-  </span>
   <%= @my.name %>
   <%= "(BTN)" if @my == @table.btn %>
   <%= "(SB)" if @my == @table.sb %>
@@ -95,25 +89,29 @@
   <% end %>
   <div class="keep_tip">keep: $<%= @my.keep_tip %></div>
   <div class="bet_tip">bet: $<%= @my.bet_tip %></div>
+
+</div>
+<div class="action_button">
   <% if @my == @table.turn_user %>
   <div class="buttons">
   <% else %>
   <div class="buttons" hidden>
   <% end %>
+
   <% if @table.btns_flg %>
-    <button id="call">call</button>
-    <button id="check" hidden>check</button>
-    <button id="raise">raise</button>
-    <button id="bet" hidden>bet</button>
-    <input type="number" id="num" min=1 value=1>
-    <button id="fold">fold</button>
+  <button id="fold">Fold</button>
+  <button id="call">Call</button>
+  <button id="check" hidden>Check</button>
+  <button id="raise">Raise</button>
+  <button id="bet" hidden>Bet</button>
+  <input type="number" id="num" min=1 value=1 />
   <% else %>
-    <button id="call" hidden>call</button>
-    <button id="check">check</button>
-    <button id="raise" hidden>raise</button>
-    <button id="bet">bet</button>
-    <input type="number" id="num" min=1 value=1>
-    <button id="fold">fold</button>
+  <button id="fold">Fold</button>
+  <button id="call" hidden>Call</button>
+  <button id="check">Check</button>
+  <button id="raise" hidden>Raise</button>
+  <button id="bet">Bet</button>
+  <input type="number" id="num" min=1 value=1 />
   <% end %>
   </div>
 </div>

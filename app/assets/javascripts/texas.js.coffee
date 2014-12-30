@@ -4,13 +4,14 @@ $ ->
   ws.trigger 'login_user', 'start'
   console.log 'Game Start'
 
-  # ●を移動
+  # 現在のプレイヤーを強調
   # @param [Array] users 旧当番ユーザと新当番ユーザのUserオブジェクトが入った要素数2の配列
   turn = (turn_user, next_turn_user) ->
     console.log 'turn'
     console.log next_turn_user
-    $('[data-user_id="' + turn_user.user_id + '"]').children('.turn').html('')
-    $('[data-user_id="' + next_turn_user.user_id + '"]').children('.turn').html('●')
+
+    $('[data-user_id="' + turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #C8C8C8')
+    $('[data-user_id="' + next_turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
 
   # ボタンを表示
   # @param [int] id ボタンを表示するユーザのID

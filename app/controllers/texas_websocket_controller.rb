@@ -3,6 +3,10 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
   def initialize_session
     logger.debug("initialize texas websocket controller")
+
+    table = Texas::Application.config.table
+    turn_user = table.turn_user
+    broadcast_message :action, [turn_user, table]
   end
   
   def out_player
@@ -21,10 +25,12 @@ class TexasWebsocketController < WebsocketRails::BaseController
     turn_user = table.turn_user
     turn_user.call()
     next_turn_user = table.turn()
+
     # 一周したら次のフェーズへ
-    if next_turn_user == table.max_user then
+    if next_turn_user == table.max_user
       logger.debug("next phase")
       table.next_phase()
+
       if table.phase == "finish"
         logger.debug("finish")
         broadcast_message "finish", [turn_user, table]
@@ -45,10 +51,12 @@ class TexasWebsocketController < WebsocketRails::BaseController
     turn_user = table.turn_user
     turn_user.check()
     next_turn_user = table.turn()
+
     # 一周したら次のフェーズへ
-    if next_turn_user == table.max_user then
+    if next_turn_user == table.max_user
       logger.debug("next phase")
       table.next_phase()
+
       if table.phase == "finish"
         logger.debug("finish")
         broadcast_message "finish", [turn_user, table]
