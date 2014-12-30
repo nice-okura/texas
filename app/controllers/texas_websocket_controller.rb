@@ -98,16 +98,39 @@ class TexasWebsocketController < WebsocketRails::BaseController
     table = Texas::Application.config.table
     turn_user = table.turn_user
     turn_user.fold()
+
     next_turn_user = table.turn()
+
+    # foldしてないユーザが１人になった場合、
+    # その場でゲーム終了
+    if table.players.select { |user| !user.fold_flg }.size == 1
+      logger.debug "foldして、残りのユーザ(#{next_turn_user})が一人になった"
+      
+      # チップ回収
+      table.collect_tip
+
+      # 勝者にあげる
+      table.winners = [next_turn_user]
+      table.winners.last.keep_tip += table.tip
+
+      broadcast_message "finish", [turn_user, table]
+
+      return 
+    end
+
     # 一周したら次のフェーズへ
-    if next_turn_user == table.max_user then
+    if next_turn_user == table.max_user
       logger.debug("next phase")
+
       table.next_phase()
+
       if table.phase == "finish"
         logger.debug("finish")
+
         broadcast_message "finish", [turn_user, table]
       else
         print_debug
+
         broadcast_message "next_phase", [turn_user, table]
       end
     else

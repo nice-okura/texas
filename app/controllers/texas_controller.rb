@@ -70,4 +70,3 @@ class TexasController < ApplicationController
     render 'texas'
   end
 end
-

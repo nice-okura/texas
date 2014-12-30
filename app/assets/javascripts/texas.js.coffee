@@ -85,6 +85,7 @@ $ ->
   # カードを非表示にする
   hide_cards = (user) ->
     console.log 'hide_cards'
+
     user_tag = $('[data-user_id="' + user.user_id + '"]')
     card_tag = user_tag.children('[data-card_id="0"]')
     card_tag.attr('class', 'card_hidden')
@@ -115,6 +116,7 @@ $ ->
   # @param [Array] res アラートで表示する文字列とtableオブジェクトが入った要素数2の配列
   failure = (res) ->
     console.log res
+
     msg = res[0]
     table = res[1].table
     alert msg
@@ -139,25 +141,31 @@ $ ->
   finish = (res) ->
     console.log 'finish'
     console.log res
+
     turn_user = res[0]
     table = res[1].table
     hide_cards(turn_user) if turn_user.fold_flg
+
     # カードオープン
     $.each table.players, (i, u) ->
       return true if u.fold_flg
+
       $.each u.hand, (j, s) ->
         card_disp = decode_card(s)
         user_tag = $('[data-user_id="' + u.user_id + '"]')
         card_tag = user_tag.children('[data-card_id="' + j + '"]')
         card_tag.attr('class', card_disp.color)
         card_tag.html(card_disp.num + '<br>' + card_disp.mark)
+
     $('[data-user_id="' + turn_user.user_id + '"]').children('.turn').html('')
+
     $.each table.winners, (i, winner) ->
       console.log winner.name
+
       $('[data-user_id="' + winner.user_id + '"]').children('.turn').html('★')
+
     update_users(table.players)
-    update_table(table)
-      
+    update_table(table)      
 
   # イベントと関数の関連付け
   ws.bind 'action', action
@@ -167,8 +175,10 @@ $ ->
   # ボタン押下時
   $('#call, #fold, #check, #bet, #raise').click ->
     console.log $(this).attr("id")
+    
     $('.buttons').hide()
     ws.trigger $(this).attr("id"), $('#num').val(), success, failure
+
     return
 
   ws.close

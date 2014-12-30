@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   # call
   def call
     logger.debug "User.call()が呼ばれた"
+
     max_tip = Texas::Application.config.table.max_user.bet_tip
     gap = max_tip - self.bet_tip
     self.gamble(gap)
@@ -19,7 +20,7 @@ class User < ActiveRecord::Base
   # fold
   def fold
     logger.debug "User.fold()が呼ばれた"
-    # logger.debug "#{caller}"
+
     self.fold_flg = true
   end
 
@@ -32,6 +33,7 @@ class User < ActiveRecord::Base
   # @param [int] tip ベットする金額
   def bet(tip)
     logger.debug "User.bet()が呼ばれた"
+
     self.gamble(tip)
     Texas::Application.config.table.btns_flg = true
     Texas::Application.config.table.max_user = self
@@ -41,8 +43,12 @@ class User < ActiveRecord::Base
   # @param [int] tip レイズする金額
   def raise(tip)
     logger.debug "User.raise()が呼ばれた"
+
     self.gamble(tip)
     Texas::Application.config.table.max_user = self
   end
 
+  def to_s
+    return "Name: #{name}"
+  end
 end
