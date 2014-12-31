@@ -158,12 +158,13 @@ $ ->
         card_tag.attr('class', card_disp.color)
         card_tag.html(card_disp.num + '<br>' + card_disp.mark)
 
-    $('[data-user_id="' + turn_user.user_id + '"]').children('.turn').html('')
-
+    $('[data-user_id="' + turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #C8C8C8')
+    
+    # 勝者を強調
     $.each table.winners, (i, winner) ->
       console.log winner.name
-
-      $('[data-user_id="' + winner.user_id + '"]').children('.turn').html('★')
+      $('[data-user_id="' + winner.user_id + '"]').css('background-color','#FDC44F')
+      $('[data-user_id="' + winner.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
 
     update_users(table.players)
     update_table(table)      

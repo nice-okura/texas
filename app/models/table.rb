@@ -307,6 +307,8 @@ class Table
       end
     end
 
+    logger.debug "勝者：#{winners.collect{|u|u.name}}"
+
     return winners
   end
 

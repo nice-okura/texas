@@ -6,7 +6,11 @@
 <% (psize-1).times do %>
   <% i = (i + 1) % psize %>
   <% user = @table.players[i] %>
-  <div class="other_players" data-user_id="<%= user.user_id %>">
+  <% if user == @table.turn_user %>
+    <div class="other_players" data-user_id="<%= user.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F">
+  <% else %>
+    <div class="other_players" data-user_id="<%= user.user_id %>">
+  <% end %>
     <%= user.name %>
     <%= "(BTN)" if user == @table.btn %>
     <%= "(SB)" if user == @table.sb %>
@@ -64,7 +68,11 @@
 </div>
 
 <!-- 自分のプレイヤーを表示 -->
-<div class="my_player" data-user_id="<%= @my.user_id %>">
+<% if @my == @table.turn_user %>
+  <div class="my_player" data-user_id="<%= @my.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F">
+<% else %>
+  <div class="my_player" data-user_id="<%= @my.user_id %>">
+<% end %>
   <%= @my.name %>
   <%= "(BTN)" if @my == @table.btn %>
   <%= "(SB)" if @my == @table.sb %>
