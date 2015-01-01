@@ -20,4 +20,9 @@ WebsocketRails::EventMap.describe do
   subscribe :check, to: TexasWebsocketController, with_method: :check
   subscribe :bet, to: TexasWebsocketController, with_method: :bet
   subscribe :raise, to: TexasWebsocketController, with_method: :raise
+  subscribe :regame, to: TexasWebsocketController, with_method: :regame
+
+  # デバッグ用
+  subscribe :all_logout, to: TexasWebsocketController, with_method: :all_logout 
+  
 end
