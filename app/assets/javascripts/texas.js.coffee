@@ -186,7 +186,7 @@ $ ->
     for i in [0..4]
       card_tag = $('.table_cards').children('[data-card_id="' + i + '"]')
       card_tag.attr('class', 'card_ura')
-      card_tag.empty()
+      card_tag.html('　<br>　')
 
     # 全ユーザのカードを伏せ、自分のカードはオープン
     $.each table.players, (i, player) ->
@@ -206,7 +206,7 @@ $ ->
           user_tag = $('[data-user_id="' + player.user_id + '"]')
           card_tag = user_tag.children('[data-card_id="' + j + '"]')
           card_tag.attr('class', 'card_ura')
-          #card_tag.empty()
+          card_tag.html('　<br>　')
 
   # Regame時の処理
   regame = (res) ->

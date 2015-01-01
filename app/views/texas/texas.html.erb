@@ -12,9 +12,9 @@
     <div class="other_players" data-user_id="<%= user.user_id %>">
   <% end %>
     <%= user.name %>
-    <%= "&#9401;" if user == @table.btn %>
-    <%= "(SB)" if user == @table.sb %>
-    <%= "(BB)" if user == @table.bb %>
+    <% if user == @table.btn %>&#9401;<% end %>
+    <% if user == @table.sb %>&#9416;<% end %>
+    <% if user == @table.bb %>&#9399;<% end %>
     <br>
     <% 2.times do |j| %>
       <% if user.fold_flg %>
@@ -75,8 +75,8 @@
 <% end %>
   <%= @my.name %>
   <% if @my == @table.btn %>&#9401;<% end %>
-  <%= "(SB)" if @my == @table.sb %>
-  <%= "(BB)" if @my == @table.bb %>
+  <% if @my == @table.sb %>&#9416;<% end %>
+  <% if @my == @table.bb %>&#9399;<% end %>
   <br>
   <% 2.times do |j| %>
     <% if @my.fold_flg %>
