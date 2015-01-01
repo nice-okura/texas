@@ -12,7 +12,7 @@
     <div class="other_players" data-user_id="<%= user.user_id %>">
   <% end %>
     <%= user.name %>
-    <%= "(BTN)" if user == @table.btn %>
+    <%= "&#9401;" if user == @table.btn %>
     <%= "(SB)" if user == @table.sb %>
     <%= "(BB)" if user == @table.bb %>
     <br>
@@ -74,7 +74,7 @@
   <div class="my_player" data-user_id="<%= @my.user_id %>">
 <% end %>
   <%= @my.name %>
-  <%= "(BTN)" if @my == @table.btn %>
+  <% if @my == @table.btn %>&#9401;<% end %>
   <%= "(SB)" if @my == @table.sb %>
   <%= "(BB)" if @my == @table.bb %>
   <br>
