@@ -35,7 +35,7 @@ class TexasController < ApplicationController
       Texas::Application.config.table.reset!(ALL_CARDS.shuffle, @my)
     end
       
-    @table = Texas::Application.config.table    
+    @table = Texas::Application.config.table
 
     # Draw Cards for users who have no cards
     @login_users.each do |user|
@@ -43,6 +43,7 @@ class TexasController < ApplicationController
         # ユーザがプレイ中でなければ
         # 各人にカードを２枚ずつ配る
         user.hand = @table.draw_cards(2) if user.hand.nil?
+
         # ユーザ初期化
         user.keep_tip = 100
         user.bet_tip = 0

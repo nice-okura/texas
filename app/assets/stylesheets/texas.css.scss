@@ -131,3 +131,35 @@ input#num:focus {
   border-radius: 3px;
   color: #ffffff;
 }
+.buttons button:hover {
+  background-color: #FDC44F;
+}
+.regame_buttons {
+  border: 0px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  text-align: right;
+  position: absolute;
+  top: 50%;
+  right: 3%;
+}
+.regame_buttons button {
+  border: 0px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  color: #111;
+  padding: 10px 0;
+  margin: 5px 0;
+  background-color: #33BFDB;
+  width: 100px;
+  border-radius: 3px;
+  color: #ffffff;
+}
+.regame_buttons button:hover {
+ background-color: #FDC44F;
+}
+ul.button {
+  list-style-type: none;
+}
