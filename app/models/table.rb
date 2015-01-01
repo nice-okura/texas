@@ -98,6 +98,7 @@ class Table
 
     i = @players.index(user)
     next_turn_user = @players[(i + 1) % @players.size]
+    
     if fold_flg_check && next_turn_user.fold_flg
       next_turn_user = next_user(next_turn_user)
     else

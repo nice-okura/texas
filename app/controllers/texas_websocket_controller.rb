@@ -74,13 +74,16 @@ class TexasWebsocketController < WebsocketRails::BaseController
   def raise
     logger.info "[#{self.class}][#{__method__}]"
     
-    raise_tip = message.to_i
     table = Texas::Application.config.table
+
+    raise_tip = message.to_i
     turn_user = table.turn_user
     gap = table.max_user.bet_tip - turn_user.bet_tip
+    
     if raise_tip > gap
       turn_user.raise(raise_tip)
       next_turn_user = table.turn()
+
       broadcast_message :action, [turn_user, table]
     else
       trigger_failure ["$#{(gap + 1)}以上でレイズしてね", table]
@@ -96,6 +99,7 @@ class TexasWebsocketController < WebsocketRails::BaseController
     turn_user = table.turn_user
     turn_user.bet(message.to_i)
     next_turn_user = table.turn()
+
     broadcast_message :action, [turn_user, table]
   end
 
@@ -144,6 +148,53 @@ class TexasWebsocketController < WebsocketRails::BaseController
     else
       broadcast_message :action, [turn_user, table]
     end
+  end
+
+  # もう一度プレイする
+  def regame
+    logger.info "[#{self.class}][#{__method__}]"
+
+    table = Texas::Application.config.table
+    login_users = Texas::Application.config.users
+
+    # 自分のユーザオブジェクト取得
+    my = login_users.find { |user| user.user_id == session[:user_id] }
+
+    # テーブルの初期化
+    table.reset!(TexasController::ALL_CARDS.shuffle, my)
+
+    # ユーザにトランプを配る
+    login_users.each do |user|
+      # 各人にカードを２枚ずつ配る
+      user.hand = table.draw_cards(2)
+ 
+     # ユーザ初期化
+      user.bet_tip = 0
+      user.fold_flg = false
+      table.add_user(user)
+    end
+
+    # BTN, SB, BB, 当番を設定する
+    table.btn = my
+    table.sb = table.next_user(table.btn)
+    table.bb = table.next_user(table.sb)
+    table.turn_user = table.next_user(table.bb)
+    
+    logger.debug table.turn_user
+
+    # ブラインド
+    table.sb.gamble(1)
+    table.bb.gamble(2)
+    table.max_user = table.bb
+
+    broadcast_message :regame, [table.turn_user, table]
+  end
+  
+  # デバッグ用
+  def all_logout
+    logger.info "[#{self.class}][#{__method__}]"
+    
+    broadcast_message :all_logout, []
   end
 
 end

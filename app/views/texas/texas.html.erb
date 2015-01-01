@@ -99,6 +99,7 @@
   <div class="bet_tip">bet: $<%= @my.bet_tip %></div>
 
 </div>
+
 <div class="action_button">
   <% if @my == @table.turn_user %>
   <div class="buttons">
@@ -121,5 +122,17 @@
   <button id="bet">Bet</button>
   <input type="number" id="num" min=1 value=1 />
   <% end %>
+
   </div>
+</div>
+
+<div class="regame_buttons" hidden>
+  <%# 再プレイ、退室などのボタン表示 %>
+  <ul class="button">
+    <li><button id="regame">One More Game</button></li>
+  </ul>
+</div>
+
+<%# デバッグ用 %>
+<div id="debug">
 </div>
