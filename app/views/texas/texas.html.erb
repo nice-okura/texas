@@ -1,6 +1,6 @@
 <%= javascript_include_tag 'texas' %>
 <!-- 自分以外のプレイヤーを表示 -->
-<div class="other_players_container">
+<div id="other_players_container">
 <% i = @table.players.index(@my) %>
 <% psize = @table.players.size %>
 <% (psize-1).times do %>
@@ -22,15 +22,22 @@
       <% else %>
         <% if @table.phase == "finish" %>
           <% card = user.hand[j] %>
+	  <% num = card[0,2].to_i %>
+	  <% case num %>
+	  <% when 1 then num = "A" %>
+	  <% when 11 then num = "J" %>
+	  <% when 12 then num = "Q" %>
+	  <% when 13 then num = "K" %>
+	  <% end %>
           <% case card[2] %>
           <% when "s" %>
-          <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&spades;</div>
+          <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&spades;</div>
           <% when "c" %>
-          <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&clubs;</div>
+          <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&clubs;</div>
           <% when "h" %>
-          <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&hearts;</div>
+          <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&hearts;</div>
           <% when "d" %>
-          <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&diams;</div>
+          <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&diams;</div>
           <% end %>
 	<% else %>
           <div class="card_ura" data-card_id="<%= j %>">　<br>　</div>
@@ -44,7 +51,7 @@
 </div>
 
 <!-- テーブルを表示 -->
-<div class="game_table">
+<div id="game_table">
   <div class="table_tip">$<%= @table.tip %></div>
   <div class="table_cards">
   <% 5.times do |i| %>
@@ -52,15 +59,22 @@
     <% if card.nil? %>
       <div class="card_ura" data-card_id="<%= i %>">　<br>　</div>
     <% else %>
+      <% num = card[0,2].to_i %>
+      <% case num %>
+      <% when 1 then num = "A" %>
+      <% when 11 then num = "J" %>
+      <% when 12 then num = "Q" %>
+      <% when 13 then num = "K" %>
+      <% end %>
       <% case card[-1] %>
       <% when "s" %>
-      <div class="card_black" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&spades;</div>
+      <div class="card_black" data-card_id="<%= i %>"><%= num %><br>&spades;</div>
       <% when "c" %>
-      <div class="card_black" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&clubs;</div>
+      <div class="card_black" data-card_id="<%= i %>"><%= num %><br>&clubs;</div>
       <% when "h" %>
-      <div class="card_red" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&hearts;</div>
+      <div class="card_red" data-card_id="<%= i %>"><%= num %><br>&hearts;</div>
       <% when "d" %>
-      <div class="card_red" data-card_id="<%= i %>"><%= card[0,2].to_i %><br>&diams;</div>
+      <div class="card_red" data-card_id="<%= i %>"><%= num %><br>&diams;</div>
       <% end %>
     <% end %>
   <% end %>
@@ -83,15 +97,22 @@
       <div class="card_hidden" data-card_id="<%= j %>">　<br>　</div>
     <% else %>
       <% card = @my.hand[j] %>
+      <% num = card[0,2].to_i %>
+      <% case num %>
+      <% when 1 then num = "A" %>
+      <% when 11 then num = "J" %>
+      <% when 12 then num = "Q" %>
+      <% when 13 then num = "K" %>
+      <% end %>
       <% case card[2] %>
       <% when "s" %>
-      <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&spades;</div>
+      <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&spades;</div>
       <% when "c" %>
-      <div class="card_black" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&clubs;</div>
+      <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&clubs;</div>
       <% when "h" %>
-      <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&hearts;</div>
+      <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&hearts;</div>
       <% when "d" %>
-      <div class="card_red" data-card_id="<%= j %>"><%= card[0,2].to_i %><br>&diams;</div>
+      <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&diams;</div>
       <% end %>
     <% end %>
   <% end %>

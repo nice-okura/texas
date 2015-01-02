@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-div.other_players_container {
+div#other_players_container {
   text-align: center;
 }
 div.other_players {
@@ -18,7 +18,7 @@ div.other_players {
   -webkit-border-radius: 4px;
   border: 2px dotted #000;
 }
-div.game_table {
+div#game_table {
   border: 10px solid #a0a0a0;
   border-radius: 40px;
   background-color: #26AE90;

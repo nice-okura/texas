@@ -65,7 +65,7 @@ class TexasController < ApplicationController
       @table.bb.gamble(2)
       @table.max_user = @table.bb
     end
-    
+
     print_debug
 
     render 'texas'
