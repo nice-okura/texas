@@ -33,6 +33,8 @@ $ ->
   update_user = (user) ->
     console.log 'update user: ' + user.name
 
+    # 
+    # keepとbetを更新
     turn_user = $('[data-user_id="' + user.user_id + '"]')
     turn_user.children('.keep_tip').html('keep: $' + user.keep_tip)
     turn_user.children('.bet_tip').html('bet: $' + user.bet_tip)
@@ -190,20 +192,24 @@ $ ->
 
     # 全ユーザのカードを伏せ、自分のカードはオープン
     $.each table.players, (i, player) ->
+      role = ''
+      role += '&#9401; ' if player.user_id == table.btn.user_id
+      role += '&#9416; ' if player.user_id == table.sb.user_id
+      role += '&#9399; ' if player.user_id == table.bb.user_id
+      user_tag = $('[data-user_id="' + player.user_id + '"]')
+      user_tag.children('span.role').html(role)
+
       if player.user_id == $('.my_player').data('user_id')
         my = player
-
+	
         # 自分ならカードオープン
         $.each my.hand, (j, s) ->
           card_disp = decode_card(s)
-
-          user_tag = $('[data-user_id="' + my.user_id + '"]')
           card_tag = user_tag.children('[data-card_id="' + j + '"]')
           card_tag.attr('class', card_disp.color)
           card_tag.html(card_disp.num + '<br>' + card_disp.mark)
       else
         for j in [0..1]
-          user_tag = $('[data-user_id="' + player.user_id + '"]')
           card_tag = user_tag.children('[data-card_id="' + j + '"]')
           card_tag.attr('class', 'card_ura')
           card_tag.html('　<br>　')

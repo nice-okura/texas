@@ -49,10 +49,8 @@ class Table
     @tip = 0
     @upcards = []
     @players = []
-    @sb = nil
-    @bb = nil
-    @btn = nil
-    @turn_user = nil
+    @btns_flg = true
+    @winners = nil
   end
 
   # ユーザ追加
@@ -171,11 +169,12 @@ class Table
       ###################################################################
 
       @phase = RIVER
-    # 今riverの場合endへ移行する
+    # 今riverの場合finishへ移行する
     when RIVER
       logger.info "river -> finish"
 
       @phase = FINISH
+      @turn_user = nil
 
       @winners = judge()
       @winners.each do |winner|

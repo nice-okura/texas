@@ -6,15 +6,19 @@
 <% (psize-1).times do %>
   <% i = (i + 1) % psize %>
   <% user = @table.players[i] %>
-  <% if user == @table.turn_user %>
+  <% if @table.phase == "finish" && @table.winners.include?(user) %>
+    <div class="other_players" data-user_id="<%= user.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F;background-color: #FDC44F">
+  <% elsif @table.phase != "finish" && user == @table.turn_user %>
     <div class="other_players" data-user_id="<%= user.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F">
   <% else %>
     <div class="other_players" data-user_id="<%= user.user_id %>">
   <% end %>
     <%= user.name %>
+    <span class="role">
     <% if user == @table.btn %>&#9401;<% end %>
     <% if user == @table.sb %>&#9416;<% end %>
     <% if user == @table.bb %>&#9399;<% end %>
+    </span>
     <br>
     <% 2.times do |j| %>
       <% if user.fold_flg %>
@@ -82,15 +86,19 @@
 </div>
 
 <!-- 自分のプレイヤーを表示 -->
-<% if @my == @table.turn_user %>
+<% if @table.phase == "finish" && @table.winners.include?(@my) %>
+  <div class="my_player" data-user_id="<%= @my.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F;background-color: #FDC44F">
+<% elsif @table.phase != "finish" && @my == @table.turn_user %>
   <div class="my_player" data-user_id="<%= @my.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F">
 <% else %>
   <div class="my_player" data-user_id="<%= @my.user_id %>">
 <% end %>
   <%= @my.name %>
+  <span class="role">
   <% if @my == @table.btn %>&#9401;<% end %>
   <% if @my == @table.sb %>&#9416;<% end %>
   <% if @my == @table.bb %>&#9399;<% end %>
+  </span>
   <br>
   <% 2.times do |j| %>
     <% if @my.fold_flg %>
@@ -147,7 +155,11 @@
   </div>
 </div>
 
+<% if @table.phase == "finish" %>
+<div class="regame_buttons">
+<% else %>
 <div class="regame_buttons" hidden>
+<% end %>
   <%# 再プレイ、退室などのボタン表示 %>
   <ul class="button">
     <li><button id="regame">One More Game</button></li>

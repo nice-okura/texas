@@ -175,7 +175,7 @@ class TexasWebsocketController < WebsocketRails::BaseController
     end
 
     # BTN, SB, BB, 当番を設定する
-    table.btn = my
+    table.btn = table.next_user(table.btn)
     table.sb = table.next_user(table.btn)
     table.bb = table.next_user(table.sb)
     table.turn_user = table.next_user(table.bb)
