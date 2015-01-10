@@ -117,6 +117,9 @@ class TexasWebsocketController < WebsocketRails::BaseController
     # その場でゲーム終了
     if table.players.select { |user| !user.fold_flg }.size == 1
       logger.debug "foldして、残りのユーザ(#{next_turn_user})が一人になった"
+
+      # おしまい
+      table.phase = "finish"
       
       # チップ回収
       table.collect_tip

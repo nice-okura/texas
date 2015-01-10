@@ -33,7 +33,6 @@ $ ->
   update_user = (user) ->
     console.log 'update user: ' + user.name
 
-    # 
     # keepとbetを更新
     turn_user = $('[data-user_id="' + user.user_id + '"]')
     turn_user.children('.keep_tip').html('keep: $' + user.keep_tip)
@@ -52,16 +51,23 @@ $ ->
   update_table = (table) ->
     console.log 'update table'
     console.log table.upcards
+    delay = 0
 
     # カードオープン
     $.each table.upcards, (i, s) ->
-      card_disp = decode_card(s)
       card_tag = $('.table_cards').children('[data-card_id="' + i + '"]')
-      card_tag.attr('class', card_disp.color)
-      card_tag.html(card_disp.num + '<br>' + card_disp.mark)
+      if card_tag.hasClass('opened')
+        return true
+      card_disp = decode_card(s)
+      card_tag.children('.card_omote').attr('class', 'card_omote ' + card_disp.color)
+      card_tag.children('.card_omote').html(card_disp.num + '<br>' + card_disp.mark)
+      setTimeout (-> card_tag.addClass('opened')), delay
+      delay += 1000
 
     # チップ変更
     $('.table_tip').html('$' + table.tip)
+
+    return delay
 
   # カードの数字＆マークを表示用に変換
   decode_card = (card) ->
@@ -93,14 +99,13 @@ $ ->
   # カードを非表示にする
   hide_cards = (user) ->
     console.log 'hide_cards'
-
     user_tag = $('[data-user_id="' + user.user_id + '"]')
     card_tag = user_tag.children('[data-card_id="0"]')
-    card_tag.attr('class', 'card_hidden')
-    card_tag.html('　<br>　')
+    card_tag.addClass('folded')
+    card_tag.children('div').hide()
     card_tag = user_tag.children('[data-card_id="1"]')
-    card_tag.attr('class', 'card_hidden')
-    card_tag.html('　<br>　')
+    card_tag.addClass('folded')
+    card_tag.children('div').hide()
   
   # 誰かがボタンを押した時
   # @param [Array] res 旧当番ユーザのUserオブジェクトとTableオブジェクトが入った要素数2の配列
@@ -140,9 +145,11 @@ $ ->
     table = res[1].table
     hide_cards(turn_user) if turn_user.fold_flg
     update_users(table.players)
-    update_table(table)
-    turn(turn_user, table.turn_user)
-    show_buttons(table.turn_user.user_id, table.btns_flg)
+    delay = update_table(table)
+    setTimeout ->
+      turn(turn_user, table.turn_user)
+      show_buttons(table.turn_user.user_id, table.btns_flg)
+    , delay 
     console.log table
 
   # 結果発表
@@ -160,25 +167,31 @@ $ ->
       return true if u.fold_flg
 
       $.each u.hand, (j, s) ->
-        card_disp = decode_card(s)
         user_tag = $('[data-user_id="' + u.user_id + '"]')
         card_tag = user_tag.children('[data-card_id="' + j + '"]')
-        card_tag.attr('class', card_disp.color)
-        card_tag.html(card_disp.num + '<br>' + card_disp.mark)
+        card_disp = decode_card(s)
+        card_tag.children('.card_omote').attr('class', 'card_omote ' + card_disp.color)
+        card_tag.children('.card_omote').html(card_disp.num + '<br>' + card_disp.mark)
+        card_tag.addClass('opened')
 
     $('[data-user_id="' + turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #C8C8C8')
-    
-    # 勝者を強調
-    $.each table.winners, (i, winner) ->
-      console.log winner.name
-      $('[data-user_id="' + winner.user_id + '"]').css('background-color','#FDC44F')
-      $('[data-user_id="' + winner.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
 
-    # Regameボタン表示
-    $('.regame_buttons').show()
+    setTimeout ->
 
-    update_users(table.players)
-    update_table(table)      
+      # 勝者を強調
+      $.each table.winners, (i, winner) ->
+        console.log winner.name
+        $('[data-user_id="' + winner.user_id + '"]').css('background-color','#FDC44F')
+        $('[data-user_id="' + winner.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
+
+      # Regameボタン表示
+      $('.regame_buttons').show()
+
+      # 勝者がチップGET
+      update_users(table.players)
+      update_table(table)      
+
+    , 1000
 
   # テーブルのカードを伏せる
   close_cards = (table) -> 
@@ -187,8 +200,7 @@ $ ->
     # テーブルのカードを伏せる
     for i in [0..4]
       card_tag = $('.table_cards').children('[data-card_id="' + i + '"]')
-      card_tag.attr('class', 'card_ura')
-      card_tag.html('　<br>　')
+      card_tag.removeClass('opened')
 
     # 全ユーザのカードを伏せ、自分のカードはオープン
     $.each table.players, (i, player) ->
@@ -199,20 +211,21 @@ $ ->
       user_tag = $('[data-user_id="' + player.user_id + '"]')
       user_tag.children('span.role').html(role)
 
+      # 自分ならカードオープン、他プレーヤーならカードを伏せる
       if player.user_id == $('.my_player').data('user_id')
         my = player
-	
-        # 自分ならカードオープン
         $.each my.hand, (j, s) ->
+          card_tag = $('.my_player').children('[data-card_id="' + j + '"]')
           card_disp = decode_card(s)
-          card_tag = user_tag.children('[data-card_id="' + j + '"]')
-          card_tag.attr('class', card_disp.color)
-          card_tag.html(card_disp.num + '<br>' + card_disp.mark)
+          card_tag.children('.card_omote').attr('class', 'card_omote ' + card_disp.color)
+          card_tag.children('.card_omote').html(card_disp.num + '<br>' + card_disp.mark)
+          card_tag.attr('class', 'card opened')
+          card_tag.children('div').show()
       else
         for j in [0..1]
           card_tag = user_tag.children('[data-card_id="' + j + '"]')
-          card_tag.attr('class', 'card_ura')
-          card_tag.html('　<br>　')
+          card_tag.attr('class', 'card')
+          card_tag.children('div').show()
 
   # Regame時の処理
   regame = (res) ->

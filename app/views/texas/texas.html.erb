@@ -13,44 +13,51 @@
   <% else %>
     <div class="other_players" data-user_id="<%= user.user_id %>">
   <% end %>
-    <%= user.name %>
-    <span class="role">
-    <% if user == @table.btn %>&#9401;<% end %>
-    <% if user == @table.sb %>&#9416;<% end %>
-    <% if user == @table.bb %>&#9399;<% end %>
-    </span>
-    <br>
-    <% 2.times do |j| %>
-      <% if user.fold_flg %>
-        <div class="card_hidden" data-card_id="<%= j %>">　<br>　</div>
-      <% else %>
-        <% if @table.phase == "finish" %>
-          <% card = user.hand[j] %>
-	  <% num = card[0,2].to_i %>
-	  <% case num %>
+  <%= user.name %>
+  <span class="role">
+  <% if user == @table.btn %>&#9401;<% end %>
+  <% if user == @table.sb %>&#9416;<% end %>
+  <% if user == @table.bb %>&#9399;<% end %>
+  </span>
+  <br>
+  <% 2.times do |j| %>
+    <% if user.fold_flg %>
+      <div class="card folded" data-card_id="<%= j %>">
+      <div class="card_ura" hidden></div>
+      <div class="card_omote" hidden></div>
+    <% else %>
+      <% if @table.phase == "finish" %>
+        <div class="card opened" data-card_id="<%= j %>">
+        <div class="card_ura"></div>
+        <% card = user.hand[j] %>
+        <% num = card[0,2].to_i %>
+        <% case num %>
 	  <% when 1 then num = "A" %>
 	  <% when 11 then num = "J" %>
 	  <% when 12 then num = "Q" %>
 	  <% when 13 then num = "K" %>
-	  <% end %>
-          <% case card[2] %>
-          <% when "s" %>
-          <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&spades;</div>
-          <% when "c" %>
-          <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&clubs;</div>
-          <% when "h" %>
-          <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&hearts;</div>
-          <% when "d" %>
-          <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&diams;</div>
-          <% end %>
-	<% else %>
-          <div class="card_ura" data-card_id="<%= j %>">　<br>　</div>
         <% end %>
+        <% case card[2] %>
+          <% when "s" %>
+          <div class="card_omote card_black"><%= num %><br>&spades;</div>
+          <% when "c" %>
+          <div class="card_omote card_black"><%= num %><br>&clubs;</div>
+          <% when "h" %>
+          <div class="card_omote card_red"><%= num %><br>&hearts;</div>
+          <% when "d" %>
+          <div class="card_omote card_red"><%= num %><br>&diams;</div>
+        <% end %>
+      <% else %>
+        <div class="card" data-card_id="<%= j %>">
+        <div class="card_ura"></div>
+	<div class="card_omote"></div>
       <% end %>
     <% end %>
-    <div class="keep_tip">keep: $<%= user.keep_tip %></div>
-    <div class="bet_tip">bet: $<%= user.bet_tip %></div>
-  </div>
+    </div>
+  <% end %>
+  <div class="keep_tip">keep: $<%= user.keep_tip %></div>
+  <div class="bet_tip">bet: $<%= user.bet_tip %></div>
+</div>
 <% end %>
 </div>
 
@@ -58,29 +65,34 @@
 <div id="game_table">
   <div class="table_tip">$<%= @table.tip %></div>
   <div class="table_cards">
-  <% 5.times do |i| %>
-    <% card = @table.upcards[i] %>
+  <% 5.times do |j| %>
+    <% card = @table.upcards[j] %>
     <% if card.nil? %>
-      <div class="card_ura" data-card_id="<%= i %>">　<br>　</div>
+      <div class="card" data-card_id="<%= j %>">
+      <div class="card_ura"></div>
+      <div class="card_omote"></div>
     <% else %>
+      <div class="card opened" data-card_id="<%= j %>">
+      <div class="card_ura"></div>
       <% num = card[0,2].to_i %>
       <% case num %>
-      <% when 1 then num = "A" %>
-      <% when 11 then num = "J" %>
-      <% when 12 then num = "Q" %>
-      <% when 13 then num = "K" %>
+        <% when 1 then num = "A" %>
+        <% when 11 then num = "J" %>
+        <% when 12 then num = "Q" %>
+        <% when 13 then num = "K" %>
       <% end %>
       <% case card[-1] %>
-      <% when "s" %>
-      <div class="card_black" data-card_id="<%= i %>"><%= num %><br>&spades;</div>
-      <% when "c" %>
-      <div class="card_black" data-card_id="<%= i %>"><%= num %><br>&clubs;</div>
-      <% when "h" %>
-      <div class="card_red" data-card_id="<%= i %>"><%= num %><br>&hearts;</div>
-      <% when "d" %>
-      <div class="card_red" data-card_id="<%= i %>"><%= num %><br>&diams;</div>
+        <% when "s" %>
+        <div class="card_omote card_black"><%= num %><br>&spades;</div>
+        <% when "c" %>
+        <div class="card_omote card_black"><%= num %><br>&clubs;</div>
+        <% when "h" %>
+        <div class="card_omote card_red"><%= num %><br>&hearts;</div>
+        <% when "d" %>
+        <div class="card_omote card_red"><%= num %><br>&diams;</div>
       <% end %>
     <% end %>
+    </div>
   <% end %>
   </div>
 </div>
@@ -102,35 +114,39 @@
   <br>
   <% 2.times do |j| %>
     <% if @my.fold_flg %>
-      <div class="card_hidden" data-card_id="<%= j %>">　<br>　</div>
+      <div class="card folded" data-card_id="<%= j %>">
+      <div class="card_omote" hidden></div>
     <% else %>
+      <div class="card opened" data-card_id="<%= j %>">
       <% card = @my.hand[j] %>
       <% num = card[0,2].to_i %>
       <% case num %>
-      <% when 1 then num = "A" %>
-      <% when 11 then num = "J" %>
-      <% when 12 then num = "Q" %>
-      <% when 13 then num = "K" %>
+        <% when 1 then num = "A" %>
+        <% when 11 then num = "J" %>
+        <% when 12 then num = "Q" %>
+        <% when 13 then num = "K" %>
       <% end %>
       <% case card[2] %>
-      <% when "s" %>
-      <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&spades;</div>
-      <% when "c" %>
-      <div class="card_black" data-card_id="<%= j %>"><%= num %><br>&clubs;</div>
-      <% when "h" %>
-      <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&hearts;</div>
-      <% when "d" %>
-      <div class="card_red" data-card_id="<%= j %>"><%= num %><br>&diams;</div>
+        <% when "s" %>
+        <div class="card_omote card_black"><%= num %><br>&spades;</div>
+        <% when "c" %>
+        <div class="card_omote card_black"><%= num %><br>&clubs;</div>
+        <% when "h" %>
+        <div class="card_omote card_red"><%= num %><br>&hearts;</div>
+        <% when "d" %>
+        <div class="card_omote card_red"><%= num %><br>&diams;</div>
       <% end %>
     <% end %>
+    </div>
   <% end %>
   <div class="keep_tip">keep: $<%= @my.keep_tip %></div>
   <div class="bet_tip">bet: $<%= @my.bet_tip %></div>
 
 </div>
 
+<!-- ボタンを表示 -->
 <div class="action_button">
-  <% if @my == @table.turn_user %>
+  <% if @my == @table.turn_user && @table.phase != "finish" %>
   <div class="buttons">
   <% else %>
   <div class="buttons" hidden>
