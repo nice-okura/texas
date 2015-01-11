@@ -166,20 +166,25 @@ $ ->
     table = res[1].table
     hide_cards(turn_user) if turn_user.fold_flg
 
-    # カードオープン
-    $.each table.players, (i, u) ->
-      return true if u.fold_flg
+    # 1人以外全員フォールドだったらカードオープンしない
+    open_flg = $.grep(table.players, (u, i) -> !u.fold_flg).length != 1
 
-      $.each u.hand, (j, s) ->
-        user_tag = $('[data-user_id="' + u.user_id + '"]')
-        card_tag = user_tag.children('[data-card_id="' + j + '"]')
-        card_disp = decode_card(s)
-        card_tag.children('.card_omote').attr('class', 'card_omote ' + card_disp.color)
-        card_tag.children('.card_omote').html(card_disp.num + '<br>' + card_disp.mark)
-        card_tag.addClass('opened')
+    # カードオープン
+    if open_flg
+      $.each table.players, (i, u) ->
+        return true if u.fold_flg
+        $.each u.hand, (j, s) ->
+          user_tag = $('[data-user_id="' + u.user_id + '"]')
+          card_tag = user_tag.children('[data-card_id="' + j + '"]')
+          card_disp = decode_card(s)
+          card_tag.children('.card_omote').attr('class', 'card_omote ' + card_disp.color)
+          card_tag.children('.card_omote').html(card_disp.num + '<br>' + card_disp.mark)
+          card_tag.addClass('opened')
 
     $('[data-user_id="' + turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #C8C8C8')
 
+    if open_flg then delay = 1000 else delay = 0
+    
     setTimeout ->
 
       # 勝者を強調
@@ -195,7 +200,7 @@ $ ->
       update_users(table.players)
       update_table(table)      
 
-    , 1000
+    , delay
 
   # テーブルのカードを伏せる
   close_cards = (table) -> 
