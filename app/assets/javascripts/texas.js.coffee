@@ -16,8 +16,12 @@ $ ->
   # ボタンを表示
   # @param [int] id ボタンを表示するユーザのID
   # @param [Boolean] btns_flg ボタン表示パターン判別用フラグ
-  show_buttons = (id, btns_flg) ->
+  show_buttons = (id, btns_flg, max_users_bet_tip, turn_users_bet_tip) ->
     console.log 'show_buttons'
+
+    # レイズorベットの最少額を設定
+    raise_min = max_users_bet_tip - turn_users_bet_tip + 1
+    $('#num').attr('min', raise_min).val(raise_min)
 
     if btns_flg
       $('#call, #fold, #raise').show()
@@ -117,7 +121,7 @@ $ ->
     hide_cards(turn_user) if turn_user.fold_flg
     update_user(turn_user)
     turn(turn_user, table.turn_user)
-    show_buttons(table.turn_user.user_id, table.btns_flg)
+    show_buttons(table.turn_user.user_id, table.btns_flg, table.max_user.bet_tip, table.turn_user.bet_tip)
     console.log table
     console.log '----------------'
 
@@ -134,7 +138,7 @@ $ ->
     msg = res[0]
     table = res[1].table
     alert msg
-    show_buttons(table.turn_user.user_id, table.btns_flg)
+    show_buttons(table.turn_user.user_id, table.btns_flg, table.max_user.bet_tip, table.turn_user.bet_tip)
 
   # 次のフェーズへ移行
   # @param [Array] res 旧当番ユーザのUserオブジェクトとTableオブジェクトが入った要素数2の配列
@@ -148,7 +152,7 @@ $ ->
     delay = update_table(table)
     setTimeout ->
       turn(turn_user, table.turn_user)
-      show_buttons(table.turn_user.user_id, table.btns_flg)
+      show_buttons(table.turn_user.user_id, table.btns_flg, table.max_user.bet_tip, table.turn_user.bet_tip)
     , delay 
     console.log table
 
@@ -242,7 +246,7 @@ $ ->
     update_table(table)
 
     # Call等のボタン表示
-    show_buttons(table.turn_user.user_id, table.btns_flg)
+    show_buttons(table.turn_user.user_id, table.btns_flg, table.max_user.bet_tip, table.turn_user.bet_tip)
 
     # Regameボタン非表示
     $('.regame_buttons').hide()

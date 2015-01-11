@@ -152,20 +152,23 @@
   <div class="buttons" hidden>
   <% end %>
 
+  <% # レイズorベットの最少額を求める %>
+  <% raise_min = @table.max_user.bet_tip - @my.bet_tip + 1 %>
+  
   <% if @table.btns_flg %>
   <button id="fold">Fold</button>
   <button id="call">Call</button>
   <button id="check" hidden>Check</button>
   <button id="raise">Raise</button>
   <button id="bet" hidden>Bet</button>
-  <input type="number" id="num" min=1 value=1 />
+  <input type="number" id="num" min=<%= raise_min %> value=<%= raise_min %> />
   <% else %>
   <button id="fold">Fold</button>
   <button id="call" hidden>Call</button>
   <button id="check">Check</button>
   <button id="raise" hidden>Raise</button>
   <button id="bet">Bet</button>
-  <input type="number" id="num" min=1 value=1 />
+  <input type="number" id="num" min=<%= raise_min %> value=<%= raise_min %> />
   <% end %>
 
   </div>
