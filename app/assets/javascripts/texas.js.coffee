@@ -186,12 +186,16 @@ $ ->
     if open_flg then delay = 1000 else delay = 0
     
     setTimeout ->
-
       # 勝者を強調
       $.each table.winners, (i, winner) ->
-        console.log winner.name
-        $('[data-user_id="' + winner.user_id + '"]').css('background-color','#FDC44F')
-        $('[data-user_id="' + winner.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
+        console.log "WINNER:" + winner.user.name
+        $('[data-user_id="' + winner.user.user_id + '"]').css('background-color','#FDC44F')
+        $('[data-user_id="' + winner.user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
+
+        # 役を表示
+        my_user_id = $('.my_player').data('user_id')
+        if my_user_id == winner.user.user_id
+          $('.hand_name').html(get_hand_name(winner.point))
 
       # Regameボタン表示
       $('.regame_buttons').show()
@@ -201,6 +205,32 @@ $ ->
       update_table(table)      
 
     , delay
+
+  # 役名を返す
+  get_hand_name = (point) ->
+    hand_name = ""
+
+    switch point
+      when 8
+        hand_name = "STRAIGHT FLUSH"
+      when 7
+        hand_name = "FOUR OF A KIND"
+      when 6
+        hand_name = "FULL HOUSE"
+      when 5
+        hand_name = "FLUSH"
+      when 4
+        hand_name = "STRAIGHT"
+      when 3
+        hand_name = "THREE OF A KIND"
+      when 2
+        hand_name = "TWO PAIR"
+      when 1
+        hand_name = "ONE PAIR"
+      else
+        hand_name = "BUTA"
+
+    return hand_name
 
   # テーブルのカードを伏せる
   close_cards = (table) -> 
@@ -263,8 +293,11 @@ $ ->
 
     # 当番の人を強調
     $('[data-user_id="' + turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #FDC44F')
+    
+    # 役の表示を消す
+    $('.hand_name').html('')
 
-    # カードを伏せる    
+    # カードを伏せる
     close_cards(table)
 
     console.log table

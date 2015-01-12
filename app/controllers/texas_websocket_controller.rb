@@ -59,9 +59,11 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
       if table.phase == "finish"
         logger.debug("finish")
+        
         broadcast_message "finish", [turn_user, table]
       else
         print_debug
+        
         broadcast_message "next_phase", [turn_user, table]
       end
     else
@@ -132,7 +134,7 @@ class TexasWebsocketController < WebsocketRails::BaseController
 
       return 
     end
-
+    
     # 一周したら次のフェーズへ
     if next_turn_user == table.max_user
       logger.debug("next phase")

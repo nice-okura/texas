@@ -178,7 +178,8 @@ class Table
 
       @winners = judge()
       @winners.each do |winner|
-        winner.keep_tip += @tip / @winners.size
+        # winner.keep_tip += @tip / @winners.size
+        winner[:user].keep_tip += @tip / @winners.size
       end
 
       @tip = 0
@@ -260,7 +261,8 @@ class Table
     # 役だけで勝者が決定する場合
     if data.size == 1
       logger.debug "役だけで決まった"
-      winners = data.collect { |d| d[:user] }
+      # winners = data.collect { |d| d[:user] }
+      winners = data
     # 役だけでは勝者が決定しない場合
     elsif data.size > 1
       logger.debug "役だけでは決まらなかった"
@@ -303,11 +305,11 @@ class Table
       logger.debug "各ユーザの評価値：#{max_values}"
 
       data.each_index do |i|
-        winners << data[i][:user] if max_values[i] == max_values.max
+        winners << data[i] if max_values[i] == max_values.max
       end
     end
 
-    logger.debug "勝者：#{winners.collect{|u|u.name}}"
+    logger.debug "勝者：#{winners.collect{|u| u[:user].name}}"
 
     return winners
   end

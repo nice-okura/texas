@@ -95,6 +95,9 @@
     </div>
   <% end %>
   </div>
+  <!-- 役を表示する場所 -->
+  <div class="hand_name">
+  </div>
 </div>
 
 <!-- 自分のプレイヤーを表示 -->
@@ -178,13 +181,12 @@
 <div class="regame_buttons">
 <% else %>
 <div class="regame_buttons" hidden>
-<% end %>
   <%# 再プレイ、退室などのボタン表示 %>
   <ul class="button">
     <li><button id="regame">One More Game</button></li>
   </ul>
 </div>
-
+<% end %>
 <%# デバッグ用 %>
 <div id="debug">
 </div>
