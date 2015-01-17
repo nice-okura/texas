@@ -127,8 +127,8 @@ class TexasWebsocketController < WebsocketRails::BaseController
       table.collect_tip
 
       # 勝者にあげる
-      table.winners = [next_turn_user]
-      table.winners.last.keep_tip += table.tip
+      next_turn_user.keep_tip += table.tip
+      table.winners = [{user: next_turn_user}]
 
       broadcast_message "finish", [turn_user, table]
 

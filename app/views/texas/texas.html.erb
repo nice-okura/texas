@@ -1,12 +1,13 @@
 <%= javascript_include_tag 'texas' %>
 <!-- 自分以外のプレイヤーを表示 -->
 <div id="other_players_container">
+<% fold_win_flg = @table.winners.present? && @table.winners.first[:point].blank? %>
 <% i = @table.players.index(@my) %>
 <% psize = @table.players.size %>
 <% (psize-1).times do %>
   <% i = (i + 1) % psize %>
   <% user = @table.players[i] %>
-  <% if @table.phase == "finish" && @table.winners.include?(user) %>
+  <% if @table.phase == "finish" && @table.winners.collect{|u|u[:user]}.include?(user) %>
     <div class="other_players" data-user_id="<%= user.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F;background-color: #FDC44F">
   <% elsif @table.phase != "finish" && user == @table.turn_user %>
     <div class="other_players" data-user_id="<%= user.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F">
@@ -26,7 +27,7 @@
       <div class="card_ura" hidden></div>
       <div class="card_omote" hidden></div>
     <% else %>
-      <% if @table.phase == "finish" %>
+      <% if @table.phase == "finish" && !fold_win_flg %>
         <div class="card opened" data-card_id="<%= j %>">
         <div class="card_ura"></div>
         <% card = user.hand[j] %>
@@ -63,130 +64,151 @@
 
 <!-- テーブルを表示 -->
 <div id="game_table">
-  <div class="table_tip">$<%= @table.tip %></div>
-  <div class="table_cards">
-  <% 5.times do |j| %>
-    <% card = @table.upcards[j] %>
-    <% if card.nil? %>
-      <div class="card" data-card_id="<%= j %>">
-      <div class="card_ura"></div>
-      <div class="card_omote"></div>
-    <% else %>
-      <div class="card opened" data-card_id="<%= j %>">
-      <div class="card_ura"></div>
-      <% num = card[0,2].to_i %>
-      <% case num %>
-        <% when 1 then num = "A" %>
-        <% when 11 then num = "J" %>
-        <% when 12 then num = "Q" %>
-        <% when 13 then num = "K" %>
-      <% end %>
-      <% case card[-1] %>
-        <% when "s" %>
-        <div class="card_omote card_black"><%= num %><br>&spades;</div>
-        <% when "c" %>
-        <div class="card_omote card_black"><%= num %><br>&clubs;</div>
-        <% when "h" %>
-        <div class="card_omote card_red"><%= num %><br>&hearts;</div>
-        <% when "d" %>
-        <div class="card_omote card_red"><%= num %><br>&diams;</div>
-      <% end %>
+<div class="table_tip">$<%= @table.tip %></div>
+<div class="table_cards">
+<% 5.times do |j| %>
+  <% card = @table.upcards[j] %>
+  <% if card.nil? %>
+    <div class="card" data-card_id="<%= j %>">
+    <div class="card_ura"></div>
+    <div class="card_omote"></div>
+  <% else %>
+    <div class="card opened" data-card_id="<%= j %>">
+    <div class="card_ura"></div>
+    <% num = card[0,2].to_i %>
+    <% case num %>
+      <% when 1 then num = "A" %>
+      <% when 11 then num = "J" %>
+      <% when 12 then num = "Q" %>
+      <% when 13 then num = "K" %>
     <% end %>
-    </div>
+    <% case card[-1] %>
+      <% when "s" %>
+      <div class="card_omote card_black"><%= num %><br>&spades;</div>
+      <% when "c" %>
+      <div class="card_omote card_black"><%= num %><br>&clubs;</div>
+      <% when "h" %>
+      <div class="card_omote card_red"><%= num %><br>&hearts;</div>
+      <% when "d" %>
+      <div class="card_omote card_red"><%= num %><br>&diams;</div>
+    <% end %>
   <% end %>
   </div>
-  <!-- 役を表示する場所 -->
-  <div class="hand_name">
-  </div>
+<% end %>
+</div>
+<!-- 役を表示する場所 -->
+<div class="hand_name">
+<% if @table.phase == "finish" && @table.winners.first[:point].present? %>
+  <% case @table.winners.first[:point] %>
+    <% when 8 %>
+    STRAIGHT FLUSH
+    <% when 7 %>
+    FOUR OF A KIND
+    <% when 6 %>
+    FULL HOUSE
+    <% when 5 %>
+    FLUSH
+    <% when 4 %>
+    STRAIGHT
+    <% when 3 %>
+    THREE OF A KIND
+    <% when 2 %>
+    TWO PAIR
+    <% when 1 %>
+    ONE PAIR
+    <% when 0 %>
+    BUTA
+  <% end %>
+<% end %>
+</div>
 </div>
 
 <!-- 自分のプレイヤーを表示 -->
-<% if @table.phase == "finish" && @table.winners.include?(@my) %>
+<% if @table.phase == "finish" && @table.winners.collect{|u|u[:user]}.include?(@my) %>
   <div class="my_player" data-user_id="<%= @my.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F;background-color: #FDC44F">
 <% elsif @table.phase != "finish" && @my == @table.turn_user %>
   <div class="my_player" data-user_id="<%= @my.user_id %>" style="box-shadow: 0px 0px 1px 3px #FDC44F">
 <% else %>
   <div class="my_player" data-user_id="<%= @my.user_id %>">
 <% end %>
-  <%= @my.name %>
-  <span class="role">
-  <% if @my == @table.btn %>&#9401;<% end %>
-  <% if @my == @table.sb %>&#9416;<% end %>
-  <% if @my == @table.bb %>&#9399;<% end %>
-  </span>
-  <br>
-  <% 2.times do |j| %>
-    <% if @my.fold_flg %>
-      <div class="card folded" data-card_id="<%= j %>">
-      <div class="card_omote" hidden></div>
-    <% else %>
-      <div class="card opened" data-card_id="<%= j %>">
-      <% card = @my.hand[j] %>
-      <% num = card[0,2].to_i %>
-      <% case num %>
-        <% when 1 then num = "A" %>
-        <% when 11 then num = "J" %>
-        <% when 12 then num = "Q" %>
-        <% when 13 then num = "K" %>
-      <% end %>
-      <% case card[2] %>
-        <% when "s" %>
-        <div class="card_omote card_black"><%= num %><br>&spades;</div>
-        <% when "c" %>
-        <div class="card_omote card_black"><%= num %><br>&clubs;</div>
-        <% when "h" %>
-        <div class="card_omote card_red"><%= num %><br>&hearts;</div>
-        <% when "d" %>
-        <div class="card_omote card_red"><%= num %><br>&diams;</div>
-      <% end %>
+<%= @my.name %>
+<span class="role">
+<% if @my == @table.btn %>&#9401;<% end %>
+<% if @my == @table.sb %>&#9416;<% end %>
+<% if @my == @table.bb %>&#9399;<% end %>
+</span>
+<br>
+<% 2.times do |j| %>
+  <% if @my.fold_flg %>
+    <div class="card folded" data-card_id="<%= j %>">
+    <div class="card_omote" hidden></div>
+  <% else %>
+    <div class="card opened" data-card_id="<%= j %>">
+    <% card = @my.hand[j] %>
+    <% num = card[0,2].to_i %>
+    <% case num %>
+      <% when 1 then num = "A" %>
+      <% when 11 then num = "J" %>
+      <% when 12 then num = "Q" %>
+      <% when 13 then num = "K" %>
     <% end %>
-    </div>
+    <% case card[2] %>
+      <% when "s" %>
+      <div class="card_omote card_black"><%= num %><br>&spades;</div>
+      <% when "c" %>
+      <div class="card_omote card_black"><%= num %><br>&clubs;</div>
+      <% when "h" %>
+      <div class="card_omote card_red"><%= num %><br>&hearts;</div>
+      <% when "d" %>
+      <div class="card_omote card_red"><%= num %><br>&diams;</div>
+    <% end %>
   <% end %>
-  <div class="keep_tip">keep: $<%= @my.keep_tip %></div>
-  <div class="bet_tip">bet: $<%= @my.bet_tip %></div>
-
+  </div>
+<% end %>
+<div class="keep_tip">keep: $<%= @my.keep_tip %></div>
+<div class="bet_tip">bet: $<%= @my.bet_tip %></div>
 </div>
 
-<!-- ボタンを表示 -->
+<!-- call等のボタンを表示 -->
 <div class="action_button">
-  <% if @my == @table.turn_user && @table.phase != "finish" %>
-  <div class="buttons">
-  <% else %>
-  <div class="buttons" hidden>
-  <% end %>
-
-  <% # レイズorベットの最少額を求める %>
-  <% raise_min = @table.max_user.bet_tip - @my.bet_tip + 1 %>
-  
-  <% if @table.btns_flg %>
+<% if @my == @table.turn_user && @table.phase != "finish" %>
+<div class="buttons">
+<% else %>
+<div class="buttons" hidden>
+<% end %>
+<% # レイズorベットの最少額を求める %>
+<% raise_min = @table.max_user.bet_tip - @my.bet_tip + 1 %>
+<% if @table.btns_flg %>
   <button id="fold">Fold</button>
   <button id="call">Call</button>
   <button id="check" hidden>Check</button>
   <button id="raise">Raise</button>
   <button id="bet" hidden>Bet</button>
   <input type="number" id="num" min=<%= raise_min %> value=<%= raise_min %> />
-  <% else %>
+<% else %>
   <button id="fold">Fold</button>
   <button id="call" hidden>Call</button>
   <button id="check">Check</button>
   <button id="raise" hidden>Raise</button>
   <button id="bet">Bet</button>
   <input type="number" id="num" min=<%= raise_min %> value=<%= raise_min %> />
-  <% end %>
-
-  </div>
-</div>
-
-<% if @table.phase == "finish" %>
-<div class="regame_buttons">
-<% else %>
-<div class="regame_buttons" hidden>
-  <%# 再プレイ、退室などのボタン表示 %>
-  <ul class="button">
-    <li><button id="regame">One More Game</button></li>
-  </ul>
-</div>
 <% end %>
+</div>
+</div>
+
+<!-- One More Game等のボタンを表示 -->
+<% if @table.phase == "finish" %>
+  <div class="regame_buttons">
+<% else %>
+  <div class="regame_buttons" hidden>
+<% end %>
+<%# 再プレイ、退室などのボタン表示 %>
+<ul class="button">
+<li><button id="regame">One More Game</button></li>
+</ul>
+</div>
+
+<!-- debug -->
 <%# デバッグ用 %>
 <div id="debug">
 </div>

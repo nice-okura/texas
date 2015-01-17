@@ -3,6 +3,7 @@ $ ->
   ws = new WebSocketRails(location.hostname + ':' + location.port + '/websocket', true)
   ws.trigger 'login_user', 'start'
   console.log 'Game Start'
+  open_card_time = $('div.card').css('transition-duration').slice(0, -1) * 1000
 
   # 現在のプレイヤーを強調
   # @param [Array] users 旧当番ユーザと新当番ユーザのUserオブジェクトが入った要素数2の配列
@@ -66,7 +67,7 @@ $ ->
       card_tag.children('.card_omote').attr('class', 'card_omote ' + card_disp.color)
       card_tag.children('.card_omote').html(card_disp.num + '<br>' + card_disp.mark)
       setTimeout (-> card_tag.addClass('opened')), delay
-      delay += 1000
+      delay += open_card_time
 
     # チップ変更
     $('.table_tip').html('$' + table.tip)
@@ -166,7 +167,7 @@ $ ->
     table = res[1].table
     hide_cards(turn_user) if turn_user.fold_flg
 
-    # 1人以外全員フォールドだったらカードオープンしない
+    # カードオープンするかどうか（一人以外全員フォールドかどうか）
     open_flg = $.grep(table.players, (u, i) -> !u.fold_flg).length != 1
 
     # カードオープン
@@ -183,7 +184,7 @@ $ ->
 
     $('[data-user_id="' + turn_user.user_id + '"]').css('box-shadow','0px 0px 1px 3px #C8C8C8')
 
-    if open_flg then delay = 1000 else delay = 0
+    if open_flg then delay = open_card_time else delay = 0
     
     setTimeout ->
       # 勝者を強調
@@ -194,7 +195,7 @@ $ ->
 
         # 役を表示
         my_user_id = $('.my_player').data('user_id')
-        if my_user_id == winner.user.user_id
+        if my_user_id == winner.user.user_id && $.type(winner.point) != 'undefined'
           $('.hand_name').html(get_hand_name(winner.point))
 
       # Regameボタン表示
